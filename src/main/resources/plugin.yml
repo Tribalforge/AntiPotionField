@@ -1,0 +1,18 @@
+name: AntiPotionField
+main: uk.co.drnaylor.antipotionfield.AntiPotionField
+version: maven-version-number
+depend: [WorldGuard]
+commands:
+   antipotionregion:
+     description: Remove any potion effects in area
+     usage: /antipotionregion <world> [region] [allow|deny]
+     aliases: [apr,apf,antipotionfield]
+     permission: antipotionfield.regions
+     permission-message: You don't have permission to perform that command
+permissions:
+   antipotionfield.regions:
+     description: Sets AntiPotion regions
+     default: op  
+   antipotionfield.bypass:
+     description: Bypass AntiPotionRegions
+     default: op     
