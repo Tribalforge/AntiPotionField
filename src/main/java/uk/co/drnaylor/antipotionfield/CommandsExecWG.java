@@ -28,7 +28,7 @@ public class CommandsExecWG implements CommandExecutor {
         } else {
           perm = false;
         }
-      } //Console always can set others fly mode
+      } 
       else {
         perm = true;
       } //console!
