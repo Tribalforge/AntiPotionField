@@ -30,7 +30,7 @@ public abstract class Util {
         positive.add(PotionEffectType.WATER_BREATHING);
     }
     
-  public static boolean canUsePotion(Player player) {
+  public static boolean canUsePotion(Player player) { // Add another argument here for the potion type!
     //If you have the relavent bypass nodes, then you can fly.
     if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
       return true;
@@ -38,6 +38,8 @@ public abstract class Util {
       return true;
     } else if (player.isOp()) {
       return true;
+//    } else if (player.hasPermission("antipotionfield.canuse.<potionname>")) {
+//      return true;
     } else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass. and it is not allowed in the region...
       return false;
     }
