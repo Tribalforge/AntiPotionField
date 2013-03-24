@@ -19,7 +19,7 @@ public class PlayerEventRegionsHandler implements Listener {
     final Player player = event.getPlayer();
 
     //See the Util class
-    if (!Util.canUsePotion(player)) {
+    if (!Util.canUsePotions(player)) {
         Util.removePositiveEffects(player);
         
       //player.removePotionEffect(PotionEffectType.SLOW);
@@ -29,7 +29,7 @@ public class PlayerEventRegionsHandler implements Listener {
   
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onPlayerInteract(PlayerInteractEvent event) {
-      if (!Util.canUsePotion(event.getPlayer())) {
+      if (!Util.canUsePotions(event.getPlayer())) {
           
           if ((event.getAction() == Action.RIGHT_CLICK_AIR) || (event.getAction() == Action.RIGHT_CLICK_BLOCK) ) {
 
