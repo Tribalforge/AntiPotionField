@@ -26,12 +26,12 @@ public abstract class Util {
         positive.add(PotionEffectType.NIGHT_VISION);
         positive.add(PotionEffectType.REGENERATION);
         positive.add(PotionEffectType.SPEED);
-        positive.add(PotionEffectType.WITHER);
+        // positive.add(PotionEffectType.WITHER);
         positive.add(PotionEffectType.WATER_BREATHING);
     }
     
-  public static boolean canUsePotions(Player player) { // Add another argument here for the potion type!
-    //If you have the relavent bypass nodes, then you can fly.
+  public static boolean canUsePotions(Player player) {
+    // If you have the relavent bypass nodes, then you can fly.
     if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
       return true;
     } else if (player.hasPermission("antipotionfield.bypass")) {
