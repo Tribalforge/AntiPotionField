@@ -30,7 +30,7 @@ public abstract class Util {
         positive.add(PotionEffectType.WATER_BREATHING);
     }
     
-  public static boolean canUsePotion(Player player) { // Add another argument here for the potion type!
+  public static boolean canUsePotions(Player player) { // Add another argument here for the potion type!
     //If you have the relavent bypass nodes, then you can fly.
     if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
       return true;

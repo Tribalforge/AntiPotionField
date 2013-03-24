@@ -18,7 +18,7 @@ public class PlayerEventRegionsHandler implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
 		//See the Util class
-		if (!Util.canUsePotion(player)) {
+		if (!Util.canUsePotions(player)) {
 			Util.removePositiveEffects(player);
 
 			//player.removePotionEffect(PotionEffectType.SLOW);
@@ -32,7 +32,7 @@ public class PlayerEventRegionsHandler implements Listener {
 				
 				// Check the type of potion in the player's hand right here
 				
-				if (!Util.canUsePotion(event.getPlayer())) { // Add the potion type as an argument for checking
+				if (!Util.canUsePotions(event.getPlayer())) { // Add the potion type as an argument for checking
 
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(ChatColor.RED + "You cannot use potions here!");
