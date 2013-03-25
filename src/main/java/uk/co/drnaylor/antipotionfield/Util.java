@@ -40,6 +40,13 @@ public abstract class Util {
       return true;
 //    } else if (player.hasPermission("antipotionfield.canuse.<potionname>")) {
 //      return true;
+//    } else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("region-potion-deny." + <potion-type> + ...
+      /* Potion usability will be defined based on a "deny-potion.potion-type.blah" StringList.
+       * If the name of the current region is found in that StringList, and the potion in the
+       * player's hand matches "potion-type", the potion will be denied.
+       * This will replace the below method.
+       */
+//      return false;
     } else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass. and it is not allowed in the region...
       return false;
     }
