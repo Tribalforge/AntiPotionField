@@ -50,7 +50,7 @@ public class PlayerEventRegionsHandler implements Listener {
 				boolean cancelEvent = false;
 				for (PotionEffect e : effects) {
 					if (!(Util.canUsePotion(event.getPlayer(), e.getType()))) {
-						
+						cancelEvent = true;
 					}
 				}
 				
