@@ -1,5 +1,6 @@
 package uk.co.drnaylor.antipotionfield;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.bukkit.ChatColor;
@@ -11,6 +12,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
 
 public class PlayerEventRegionsHandler implements Listener {
 
@@ -31,11 +35,20 @@ public class PlayerEventRegionsHandler implements Listener {
 			if ((event.getAction() == Action.RIGHT_CLICK_AIR) || (event.getAction() == Action.RIGHT_CLICK_BLOCK) ) {
 				
 				// Check the type of potion in the player's hand right here
+				Potion potion = Potion.fromItemStack(event.getPlayer().getItemInHand());
+				ArrayList <PotionEffect> effects = (ArrayList <PotionEffect>) potion.getEffects();
 				
-				if (!Util.canUsePotions(event.getPlayer())) { // Add the potion type as an argument for checking
-
+				boolean cancelEvent = false;
+				for (PotionEffect e : effects) {
+					if (!(Util.canUsePotion(event.getPlayer(), e.getType()))) {
+						
+					}
+				}
+				
+				//if (!Util.canUsePotions(event.getPlayer())) { // Add the potion type as an argument for checking
+				if (cancelEvent) {
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(ChatColor.RED + "You cannot use potions here!");
+					event.getPlayer().sendMessage(ChatColor.RED + "You cannot use that potion here!");
 					Util.removePositiveEffects(event.getPlayer());
 				}
 			}
