@@ -30,6 +30,38 @@ public abstract class Util {
 		positive.add(PotionEffectType.WATER_BREATHING);
 	}
 
+	public static StringList getRegionsAtPlayerLoc(Player player) {
+		WorldGuardInterface wgi;
+		ArrayList<String> regionlist;
+		try { //Hook into WG
+			wgi = new WorldGuardInterface();
+			regionlist = wgi.GetRegionNamesAtPoint(player); // Get regions
+		} catch (WorldGuardAPIException ex) {
+			return null; //If we can't hook in, then we should return.
+		}
+		return regionlist;
+	}
+
+	public static ArrayList getDeniedEffectsAtPlayerLoc(Player player) {
+		StringList regionlist = getRegionsAtPlayerLoc(player);
+		if (regionlist == null) {
+			return null; //If there's no regions, then there's no effects!
+		}
+		
+		ArrayList <String> deniedEffects = new ArrayList <String> (); //Will optimize later
+		
+		for (String s : regionlist) {
+			//For each region, get its denied effect StringList out of the configuration file
+			//and add any new denied effects to the deniedEffects ArrayList.
+			for (String e : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-regions." + s + ".deny-effects")) {
+				if (!deniedEffects.contains(e)) { //To prevent duplicate entries
+					deniedEffects.add(e);
+				}	
+			}
+		}
+		return deniedEffects;
+	}
+
 	public static boolean canUsePotion(Player player, PotionEffectType type) {
 		//If you have the relavent bypass nodes, then you can still use your positive potions.
 		if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
@@ -44,17 +76,13 @@ public abstract class Util {
 			return false;
 		}
 
-		WorldGuardInterface wgi;
-		ArrayList<String> regionlist;
-		try { //Hook into WG
-			wgi = new WorldGuardInterface();
-			regionlist = wgi.GetRegionNamesAtPoint(player); // Get regions
-		} catch (WorldGuardAPIException ex) {
-			return true; //If we can't hook in, then we should return true
-		}
+		StringList regionlist = getRegionsAtPlayerLoc(player);
 		
 		//If there are no regions, then we can return true.
 		if (regionlist != null) {
+			
+			//This section needs to be rewritten, as I've changed my mind about the layout of the configuration file.
+			
 			//Check for region
 			for (String a : regionlist) {
 				//Is the selected region a no-potion zone?
@@ -69,12 +97,17 @@ public abstract class Util {
 		return true;
 		
 		
-		/* Potion usability will be defined in the config based on a "no-potoin-regions.deny-blah" StringList.
-		 * If the name of the current region is found in that StringList, and the potion in the
-		 * player's hand has an effect that matches "blah", the potion will be denied.
+		/* Potion usability will be defined in the config based on a "no-potion-regions.<region>.deny-effects" StringList.
+		 * If the name of the current potion effect is found in that StringList, and the player is in
+		 * the region specified, the potion will be denied.
 		 * This will replace the below method.
 		 */
 		
+	}
+
+	public static boolean hasDisallowedEffets(Player player) {
+		//Get the region and check to see if any of the player's current effects are disallowed in it.
+		return false;
 	}
 
 	@Deprecated
@@ -89,11 +122,6 @@ public abstract class Util {
 			//	} else if (player.hasPermission("antipotionfield.canuse.<potionname>")) {
 			//		return true;
 			//	} else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("region-potion-deny." + <potion-type> + ...
-			/* Potion usability will be defined based on a "deny-potion.potion-type.blah" StringList.
-			 * If the name of the current region is found in that StringList, and the potion in the
-			 * player's hand matches "potion-type", the potion will be denied.
-			 * This will replace the below method.
-			 */
 			//		return false;
 		} else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass. and it is not allowed in the region...
 			return false;
