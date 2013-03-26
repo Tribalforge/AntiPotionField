@@ -42,7 +42,7 @@ public abstract class Util {
 		return regionlist;
 	}
 
-	public static ArrayList getDeniedEffectsAtPlayerLoc(Player player) {
+	public static ArrayList<String> getDeniedEffectsAtPlayerLoc(Player player) {
 		StringList regionlist = getRegionsAtPlayerLoc(player);
 		if (regionlist == null) {
 			return null; //If there's no regions, then there's no effects!
