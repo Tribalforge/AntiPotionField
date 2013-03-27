@@ -3,7 +3,6 @@ package uk.co.drnaylor.antipotionfield;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -46,7 +45,7 @@ public class PlayerEventRegionsHandler implements Listener {
         }
         // Check the type of potion in the player's hand
         Potion potion = Potion.fromItemStack(event.getItem());
-        List<PotionEffect> effects = (List<PotionEffect>)potion.getEffects();
+        ArrayList<PotionEffect> effects = (ArrayList<PotionEffect>) potion.getEffects();
 
         boolean cancelEvent = false;
         for (PotionEffect e : effects) {
