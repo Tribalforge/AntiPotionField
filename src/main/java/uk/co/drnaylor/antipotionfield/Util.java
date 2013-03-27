@@ -81,7 +81,7 @@ public abstract class Util {
 		if (deniedEffects == null) { // If there's a plugin error, no denied effects, or no denied regions...
 			return true;         // Return true, as there's no reason for us to attempt to stop the event.
 		} else if (deniedEffects.contains(type)) { // If the potion/effect they're trying to use is disallowed...
-				return false;
+			return false;
 		}
 		
 		//We can use the potion here.
@@ -170,9 +170,13 @@ public abstract class Util {
 			
 			for (PotionEffect ce : player.getActivePotionEffects()) {
 				if (denEff.contains(ce.getType())) {
-					notify = true;
-					player.sendMessage(ChatColor.RED + "Your effect " + ce.getType().getName() + " is disallowed in this area.");
-					player.removePotionEffect(ce.getType());
+					if (!player.hasPermission("worldguard.region.bypass." + player.getWorld().getName()) || !player.hasPermission("antipotionfield.bypass") || !player.isOp() || player.hasPermission("antipotionfield.allowed-potions." + ce.getType())) {
+						//Don't remove the effect if they're allowed to have it!
+					} else {
+						notify = true;
+						player.sendMessage(ChatColor.RED + "Your effect " + ce.getType().getName() + " is disallowed in this area.");
+						player.removePotionEffect(ce.getType());
+					}
 				}
 			
 				if (notify) {
@@ -182,7 +186,7 @@ public abstract class Util {
 		}
 	}
 	
-	
+	@Deprecated
 	public static void removePositiveEffects(Player player) {
 		if (!player.getActivePotionEffects().isEmpty()) {
 
