@@ -18,4 +18,4 @@ Allows or denies the use of positive potions in the region [region], in world &l
        
 
 -
-Licenced under the MIT licence. (c) 2013 Dr Daniel R. Naylor
+Licenced under the MIT licence. (c) 2013 Dr Daniel R. Naylor (dualspiral) + Eevables Modevet
