@@ -1,8 +1,5 @@
 package uk.co.drnaylor.antipotionfield;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -71,8 +68,8 @@ public class PlayerEventRegionsHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPotionSplash(PotionSplashEvent event) {
     	if (event.getPotion().getShooter() instanceof Player) { // If a player threw the potion...
-    		ArrayList <PotionEffectType> deniedEffects = Util.getDeniedEffectsAtPlayerLoc((Player)event.getPotion().getShooter());
-    		ArrayList <PotionEffect> potionEffects = (ArrayList <PotionEffect>) event.getPotion().getEffects();
+    		List <PotionEffectType> deniedEffects = Util.getDeniedEffectsAtPlayerLoc((Player)event.getPotion().getShooter());
+    		List <PotionEffect> potionEffects = (List <PotionEffect>) event.getPotion().getEffects();
     		if (deniedEffects == null || potionEffects == null) {
     			return;
     		}
