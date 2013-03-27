@@ -2,6 +2,7 @@ package uk.co.drnaylor.antipotionfield;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -30,7 +31,7 @@ public abstract class Util {
 		positive.add(PotionEffectType.WATER_BREATHING);
 	}
 
-	public static StringList getRegionsAtPlayerLoc(Player player) {
+	public static List<String> getRegionsAtPlayerLoc(Player player) {
 		WorldGuardInterface wgi;
 		ArrayList<String> regionlist;
 		try { //Hook into WG
@@ -42,8 +43,8 @@ public abstract class Util {
 		return regionlist;
 	}
 
-	public static ArrayList <PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
-		StringList regionlist = getRegionsAtPlayerLoc(player);
+	public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
+		List<String> regionlist = getRegionsAtPlayerLoc(player);
 		if (regionlist == null) {
 			return null; //If there's no regions, then there's no effects!
 		}
@@ -79,12 +80,8 @@ public abstract class Util {
 		ArrayList <PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player);
 		if (deniedEffects == null) { // If there's a plugin error, no denied effects, or no denied regions...
 			return true;         // Return true, as there's no reason for us to attempt to stop the event.
-		} else {
-			if (deniedEffects.contains(type)) { // If the potion/effect they're trying to use is disallowed...
+		} else if (deniedEffects.contains(type)) { // If the potion/effect they're trying to use is disallowed...
 				return false;
-			} else {
-				return true;
-			}
 		}
 		
 		//We can use the potion here.
@@ -110,7 +107,7 @@ public abstract class Util {
 		ArrayList <PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player);
 		
 		for (PotionEffect ce : curEffects) {
-			if (denEff.contains(ce.getType()) {
+			if (denEff.contains(ce.getType())) {
 				return true; // The player has an effect that's denied at their current location.
 			}
 		}
@@ -172,7 +169,7 @@ public abstract class Util {
 			boolean notify = false;
 			
 			for (PotionEffect ce : player.getActivePotionEffects()) {
-				if (denEff.contains(ce.getType()) {
+				if (denEff.contains(ce.getType())) {
 					notify = true;
 					player.sendMessage(ChatColor.RED + "Your effect " + ce.getType().getName() + " is disallowed in this area.");
 					player.removePotionEffect(ce.getType());
