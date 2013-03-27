@@ -42,21 +42,21 @@ public abstract class Util {
 		return regionlist;
 	}
 
-	public static ArrayList<String> getDeniedEffectsAtPlayerLoc(Player player) {
+	public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
 		StringList regionlist = getRegionsAtPlayerLoc(player);
 		if (regionlist == null) {
 			return null; //If there's no regions, then there's no effects!
 		}
 		
-		ArrayList <String> deniedEffects = new ArrayList <String> (); //Will optimize later
+		ArrayList <PotionEffectType> deniedEffects = new ArrayList <PotionEffectType> ();
 		
 		for (String s : regionlist) {
 			//For each region, get its denied effect StringList out of the configuration file
 			//and add any new denied effects to the deniedEffects ArrayList.
-			for (String e : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-regions." + s + ".deny-effects")) {
-				if (!deniedEffects.contains(e)) { //To prevent duplicate entries
-					deniedEffects.add(e);
-				}	
+			for (String e : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-effects")) {
+				if (!deniedEffects.contains(PotionEffectType.getByName(e))) { //To prevent duplicate entries
+					deniedEffects.add(PotionEffectType.getByName(e));
+				}
 			}
 		}
 		return deniedEffects;
@@ -70,39 +70,51 @@ public abstract class Util {
 			return true;
 		} else if (player.isOp()) {
 			return true;
-		} else if (player.hasPermission("antipotionfield.canuse." + type.toString())) {
+		} else if (player.hasPermission("antipotionfield.canuse." + type.getName())) {
 			return true;
 		} else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass, and it is not allowed in the region...
 			return false;
 		}
-
-		StringList regionlist = getRegionsAtPlayerLoc(player);
+		
+		ArrayList<PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player);
+		if (deniedEffects == null) {
+			return true;
+		} else {
+			if (deniedEffects.contains(type)) { // If the effect they're trying to use is disallowed...
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		
+		//StringList regionlist = getRegionsAtPlayerLoc(player);
 		
 		//If there are no regions, then we can return true.
-		if (regionlist != null) {
+		//if (regionlist != null) {
 			
 			//This section needs to be rewritten, as I've changed my mind about the layout of the configuration file.
 			
 			//Check for region
-			for (String a : regionlist) {
+			//for (String a : regionlist) {
 				//Is the selected region a no-potion zone?
 				//if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains(a)) {
-				if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-regions.deny-" + type.toString()).contains(a)) {
+				//if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions.deny-" + type.toString()).contains(a)) {
 					//Yes. We cannot use the potion here here - so we may as well break and return false now.
-					return false;
-				}
-			}
-		}
+					//return false;
+				//}
+			//}
+		//}
+		
+		
 		//We can use the potion here.
 		return true;
 		
-		
-		/* Potion usability will be defined in the config based on a "no-potion-regions.<region>.deny-effects" StringList.
+		/* Potion usability will be defined in the config based on a "no-potion-effect-regions.<region>.deny-effects" StringList.
 		 * If the name of the current potion effect is found in that StringList, and the player is in
 		 * the region specified, the potion will be denied.
 		 * This will replace the below method.
 		 */
-		
 	}
 
 	public static boolean hasDisallowedEffets(Player player) {
