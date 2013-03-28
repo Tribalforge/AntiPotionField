@@ -45,7 +45,7 @@ public abstract class Util {
 
 	public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
 		List<String> regionlist = getRegionsAtPlayerLoc(player);
-		if (regionlist == null) {
+		if (regionlist == null || regionlist.isEmpty()) {
 			return null; //If there's no regions, then there's no effects!
 		}
 		
@@ -78,7 +78,7 @@ public abstract class Util {
 		}
 		
 		ArrayList <PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player);
-		if (deniedEffects == null) { // If there's a plugin error, no denied effects, or no denied regions...
+		if (deniedEffects == null || deniedEffects.isEmpty()) { // If there's a plugin error, no denied effects, or no denied regions...
 			return true;         // Return true, as there's no reason for us to attempt to stop the event.
 		} else if (deniedEffects.contains(type)) { // If the potion/effect they're trying to use is disallowed...
 			return false;
@@ -163,25 +163,27 @@ public abstract class Util {
 		return true;
 	}
 
+        /**
+         * Utility method that removes prohibited effects from a player, dependant on their location.
+         * 
+         * @param player Player to remove effects from.
+         */
 	public static void removeDisallowedEffects(Player player) {
 		if (!player.getActivePotionEffects().isEmpty()) {
 			ArrayList <PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player);
-			boolean notify = false;
-			
+			boolean notify = false;                        
 			for (PotionEffect ce : player.getActivePotionEffects()) {
 				if (denEff.contains(ce.getType())) {
-					if (!player.hasPermission("worldguard.region.bypass." + player.getWorld().getName()) || !player.hasPermission("antipotionfield.bypass") || !player.isOp() || player.hasPermission("antipotionfield.allowed-potions." + ce.getType())) {
-						//Don't remove the effect if they're allowed to have it!
-					} else {
-						notify = true;
-						player.sendMessage(ChatColor.RED + "Your effect " + ce.getType().getName() + " is disallowed in this area.");
-						player.removePotionEffect(ce.getType());
+					if (!player.hasPermission("worldguard.region.bypass." + player.getWorld().getName()) || !player.hasPermission("antipotionfield.bypass") || !player.isOp() || player.hasPermission("antipotionfield.allowed-potions." + ce.getType().getName())) {
+						continue; //Don't remove the effect if they're allowed to have it!
 					}
+					notify = true;
+					player.sendMessage(ChatColor.RED + "Your effect " + ce.getType().getName() + " is disallowed in this area.");
+					player.removePotionEffect(ce.getType());
 				}
-			
-				if (notify) {
-					player.sendMessage(ChatColor.RED + "Your disallowed potion effects have been removed.");
-				}
+			}
+      			if (notify) { // Keep this out of the loop!
+				player.sendMessage(ChatColor.RED + "Your disallowed potion effects have been removed.");
 			}
 		}
 	}
