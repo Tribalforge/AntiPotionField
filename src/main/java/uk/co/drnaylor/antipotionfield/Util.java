@@ -30,7 +30,13 @@ public abstract class Util {
 		// positive.add(PotionEffectType.WITHER);
 		positive.add(PotionEffectType.WATER_BREATHING);
 	}
-
+	
+	/**
+	 * Gets the list of regions at a player's location and returns them in a StringList.
+	 * 
+	 * @param player The player whose location we want to check for regions.
+	 * @return regionlist The list of regions at the player's location.
+	 */
 	public static List<String> getRegionsAtPlayerLoc(Player player) {
 		WorldGuardInterface wgi;
 		ArrayList<String> regionlist;
@@ -43,6 +49,12 @@ public abstract class Util {
 		return regionlist;
 	}
 
+	/**
+	 * Gets the list of denied effects at the player's location.
+	 * 
+	 * @param player The player whose location we want to check.
+	 * @return deniedEffects A StringList of denied effects at that location.
+	 */
 	public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
 		List<String> regionlist = getRegionsAtPlayerLoc(player);
 		if (regionlist == null || regionlist.isEmpty()) {
@@ -62,7 +74,15 @@ public abstract class Util {
 		}
 		return deniedEffects;
 	}
-
+	
+	// Another method will go right here in a little bit!
+	
+	/**
+	 * Checks to see if the passed Player can use a potion with effect type.
+	 * @param player The player whose location we will check for denied effects.
+	 * @param type The PotionEffectType we are specifically checking for.
+	 * @return true if the player is allowed to use that potion, otherwise false.
+	 */
 	public static boolean canUsePotion(Player player, PotionEffectType type) {
 		//If you have the relavent bypass nodes, then you can still use your positive potions.
 		if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
@@ -115,57 +135,8 @@ public abstract class Util {
 		return false;
 	}
 
-	@Deprecated
-	public static boolean canUsePotions(Player player) {
-		//If you have the relavent bypass nodes, then you can still use your positive potions.
-		if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
-			return true;
-		} else if (player.hasPermission("antipotionfield.bypass")) {
-			return true;
-		} else if (player.isOp()) {
-			return true;
-			//	} else if (player.hasPermission("antipotionfield.canuse.<potionname>")) {
-			//		return true;
-			//	} else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("region-potion-deny." + <potion-type> + ...
-			//		return false;
-		} else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass. and it is not allowed in the region...
-			return false;
-		}
-
-		WorldGuardInterface wgi;
-		ArrayList<String> regionlist;
-		//Hook into WG
-		try
-		{
-			wgi = new WorldGuardInterface();
-			//Get regions
-			regionlist = wgi.GetRegionNamesAtPoint(player);
-		}
-		catch (WorldGuardAPIException ex)
-		{
-			//If we can't hook in, then we should return true
-			return true;
-		}
-
-		//If there are no regions, then we can return true.
-		if (regionlist != null) {
-			//Check for region
-			for (String a : regionlist) {
-				//Is the selected region a no-fly zone?
-				if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains(a)) {
-					//Yes. We cannot fly here - so we may as well break and return false now.
-					return false;
-				}
-			}
-
-		}
-		//We can fly here.
-		return true;
-	}
-
         /**
          * Utility method that removes prohibited effects from a player, dependant on their location.
-         * 
          * @param player Player to remove effects from.
          */
 	public static void removeDisallowedEffects(Player player) {
