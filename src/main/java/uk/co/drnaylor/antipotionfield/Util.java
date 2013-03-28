@@ -33,7 +33,6 @@ public abstract class Util {
 	
 	/**
 	 * Gets the list of regions at a player's location and returns them in a StringList.
-	 * 
 	 * @param player The player whose location we want to check for regions.
 	 * @return regionlist The list of regions at the player's location.
 	 */
@@ -51,7 +50,6 @@ public abstract class Util {
 
 	/**
 	 * Gets the list of denied effects at the player's location.
-	 * 
 	 * @param player The player whose location we want to check.
 	 * @return deniedEffects A StringList of denied effects at that location.
 	 */
@@ -75,7 +73,40 @@ public abstract class Util {
 		return deniedEffects;
 	}
 	
-	// Another method will go right here in a little bit!
+	/**
+	 * Gets the list of denied effects at the player's location.
+	 * @param player The player whose location we want to check.
+	 * @param apl An EffectMeans specifying whether we want to check thrown effects, potion effects, or applied effects.
+	 * @return deniedEffects A StringList of the specified denied effects at that location.
+	 */
+	public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player, EffectMeans apl) {
+		
+		/*
+		I can't make new classes through GitHub, so I'm going to write down a gist of the enum I'll make later.
+		
+		public enum EffectMeans {
+			EFFECT, // For if we are checking applied effects
+			POTION, // For if we want to check potions that are consumed
+			SPLASH  // For if we want to check potions that are thrown
+		}
+		*/
+		
+		List<String> regionlist = getRegionsAtPlayerLoc(player);
+		if (regionlist == null || regionlist.isEmpty()) {
+			return null; //If there's no regions, then there's no effects!
+		}
+		
+		ArrayList <PotionEffectType> deniedEffects = new ArrayList <PotionEffectType> ();
+		
+		for (String s : regionlist) {
+			for (String e : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-" + apl.toString() + "s")) {
+				if (!deniedEffects.contains(PotionEffectType.getByName(e))) { //To prevent duplicate entries
+					deniedEffects.add(PotionEffectType.getByName(e));
+				}
+			}
+		}
+		return deniedEffects;
+	}
 	
 	/**
 	 * Checks to see if the passed Player can use a potion with effect type.
