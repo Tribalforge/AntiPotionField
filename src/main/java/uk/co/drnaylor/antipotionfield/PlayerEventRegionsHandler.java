@@ -25,7 +25,7 @@ public class PlayerEventRegionsHandler implements Listener {
      *
      * @param event The PlayerMoveEvent involving the player.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         //See the Util class
@@ -57,40 +57,41 @@ public class PlayerEventRegionsHandler implements Listener {
             }
         }
     }
-    
+
     /**
-     * Acts upon a potion splash event.
-     * If the potion is not thrown by a player, it's allowed to pass.
-     * If it was thrown by a player, however, it checks to see if the potion's effect was allowed.
+     * Acts upon a potion splash event. If the potion is not thrown by a player,
+     * it's allowed to pass. If it was thrown by a player, however, it checks to
+     * see if the potion's effect was allowed.
+     *
      * @param event The PotionSplashEvent event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPotionSplash(PotionSplashEvent event) {
-    	if (event.getPotion().getShooter() instanceof Player) { // If a player threw the potion...
-    		List <PotionEffectType> deniedEffects = Util.getDeniedEffectsAtPlayerLoc((Player)event.getPotion().getShooter());
-    		Collection <PotionEffect> potionEffects = event.getPotion().getEffects();
-    		if (deniedEffects == null || potionEffects == null || deniedEffects.isEmpty() || potionEffects.isEmpty()) {
-    			return;
-    		}
-    		
-    		//ArrayList <PotionEffect> canceledEffects = new ArrayList <PotionEffect> ();
-    		for (PotionEffect pe : potionEffects) {
-    			if (deniedEffects.contains(pe.getType())) {
-    				//canceledEffects.add(pe);
-    				//event.getPotion().getEffects().remove(pe);
-    				event.setCancelled(true); // We can try more complex checks later.
-    				Util.removeDisallowedEffects((Player)event.getPotion().getShooter());
-                                Collection<LivingEntity> affected = event.getAffectedEntities();
-                                if (affected != null && !affected.isEmpty()) { // If there is an affected entity
-                                    for (LivingEntity p : affected) {
-                                        if (p instanceof Player) {
-                                            Util.removeDisallowedEffects((Player)p);
-                                        }
-                                    }
-                                }
-                                return; // No more needs to be done.
-    			}
-    		}    		
-    	}
+        if (event.getPotion().getShooter() instanceof Player) { // If a player threw the potion...
+            List<PotionEffectType> deniedEffects = Util.getDeniedEffectsAtPlayerLoc((Player) event.getPotion().getShooter());
+            Collection<PotionEffect> potionEffects = event.getPotion().getEffects();
+            if (deniedEffects == null || potionEffects == null || deniedEffects.isEmpty() || potionEffects.isEmpty()) {
+                return;
+            }
+
+            //ArrayList <PotionEffect> canceledEffects = new ArrayList <PotionEffect> ();
+            for (PotionEffect pe : potionEffects) {
+                if (deniedEffects.contains(pe.getType())) {
+                    //canceledEffects.add(pe);
+                    //event.getPotion().getEffects().remove(pe);
+                    event.setCancelled(true); // We can try more complex checks later.
+                    Util.removeDisallowedEffects((Player) event.getPotion().getShooter());
+                    Collection<LivingEntity> affected = event.getAffectedEntities();
+                    if (affected != null && !affected.isEmpty()) { // If there is an affected entity
+                        for (LivingEntity p : affected) {
+                            if (p instanceof Player) {
+                                Util.removeDisallowedEffects((Player) p);
+                            }
+                        }
+                    }
+                    return; // No more needs to be done.
+                }
+            }
+        }
     }
 }
