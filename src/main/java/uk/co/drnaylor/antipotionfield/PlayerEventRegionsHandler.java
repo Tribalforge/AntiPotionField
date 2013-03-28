@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,11 +20,12 @@ public class PlayerEventRegionsHandler implements Listener {
 
     /**
      * Checks the player's current effects to see if they are allowed at their
-     * location.
+     * location. We're not altering this event itself, so the MONITOR priority
+     * is appropriate here.
      *
      * @param event The PlayerMoveEvent involving the player.
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         //See the Util class
@@ -45,17 +47,14 @@ public class PlayerEventRegionsHandler implements Listener {
         Potion potion = Potion.fromItemStack(event.getItem());
         Collection<PotionEffect> effects = potion.getEffects();
 
-        boolean cancelEvent = false;
         for (PotionEffect e : effects) {
             if (!(Util.canUsePotion(event.getPlayer(), e.getType()))) {
-                cancelEvent = true;
+                // If we get here, we cancel this event and all is done.
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(ChatColor.RED + "You cannot use that potion here!");
+                Util.removeDisallowedEffects(event.getPlayer());
+                return; // We don't need to check any more.
             }
-        }
-
-        if (cancelEvent) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "You cannot use that potion here!");
-            Util.removeDisallowedEffects(event.getPlayer());
         }
     }
     
@@ -70,7 +69,7 @@ public class PlayerEventRegionsHandler implements Listener {
     	if (event.getPotion().getShooter() instanceof Player) { // If a player threw the potion...
     		List <PotionEffectType> deniedEffects = Util.getDeniedEffectsAtPlayerLoc((Player)event.getPotion().getShooter());
     		Collection <PotionEffect> potionEffects = event.getPotion().getEffects();
-    		if (deniedEffects == null || potionEffects == null) {
+    		if (deniedEffects == null || potionEffects == null || deniedEffects.isEmpty() || potionEffects.isEmpty()) {
     			return;
     		}
     		
@@ -81,20 +80,17 @@ public class PlayerEventRegionsHandler implements Listener {
     				//event.getPotion().getEffects().remove(pe);
     				event.setCancelled(true); // We can try more complex checks later.
     				Util.removeDisallowedEffects((Player)event.getPotion().getShooter());
+                                Collection<LivingEntity> affected = event.getAffectedEntities();
+                                if (affected != null && !affected.isEmpty()) { // If there is an affected entity
+                                    for (LivingEntity p : affected) {
+                                        if (p instanceof Player) {
+                                            Util.removeDisallowedEffects((Player)p);
+                                        }
+                                    }
+                                }
+                                return; // No more needs to be done.
     			}
-    		}
-    		
-    		//if (canceledEffects.size() <= 0) {
-    		//	return;
-    		//}
-    		/*
-    		Collection <LivingEntity> affected = event.getAffectedEntities();
-    		for (LivingEntity p : affected) {
-    			if (p instanceof Player) {
-    				
-    			}
-    		} */
-    		
+    		}    		
     	}
     }
 }
