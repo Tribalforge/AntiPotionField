@@ -1,9 +1,9 @@
 package uk.co.drnaylor.antipotionfield;
 
+import java.util.Collection;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,7 +43,7 @@ public class PlayerEventRegionsHandler implements Listener {
         }
         // Check the type of potion in the player's hand
         Potion potion = Potion.fromItemStack(event.getItem());
-        List<PotionEffect> effects = (List<PotionEffect>)potion.getEffects();
+        Collection<PotionEffect> effects = potion.getEffects();
 
         boolean cancelEvent = false;
         for (PotionEffect e : effects) {
@@ -69,7 +69,7 @@ public class PlayerEventRegionsHandler implements Listener {
     public void onPotionSplash(PotionSplashEvent event) {
     	if (event.getPotion().getShooter() instanceof Player) { // If a player threw the potion...
     		List <PotionEffectType> deniedEffects = Util.getDeniedEffectsAtPlayerLoc((Player)event.getPotion().getShooter());
-    		List <PotionEffect> potionEffects = (List <PotionEffect>) event.getPotion().getEffects();
+    		Collection <PotionEffect> potionEffects = event.getPotion().getEffects();
     		if (deniedEffects == null || potionEffects == null) {
     			return;
     		}
