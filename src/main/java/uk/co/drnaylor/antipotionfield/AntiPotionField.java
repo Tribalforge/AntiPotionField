@@ -39,5 +39,6 @@ public class AntiPotionField extends JavaPlugin {
     @Override
     public void onDisable() {
         regions.getRegionConfig().saveConfig();
+        getLogger().info("AntiPotionField " + this.getDescription().getVersion() + " disabled.");
     }    
 }

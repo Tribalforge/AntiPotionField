@@ -77,8 +77,6 @@ public class PlayerEventRegionsHandler implements Listener {
             //ArrayList <PotionEffect> canceledEffects = new ArrayList <PotionEffect> ();
             for (PotionEffect pe : potionEffects) {
                 if (deniedEffects.contains(pe.getType())) {
-                    //canceledEffects.add(pe);
-                    //event.getPotion().getEffects().remove(pe);
                     event.setCancelled(true); // We can try more complex checks later.
                     Util.removeDisallowedEffects((Player) event.getPotion().getShooter());
                     Collection<LivingEntity> affected = event.getAffectedEntities();
