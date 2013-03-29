@@ -33,7 +33,7 @@ public class AntiPotionField extends JavaPlugin {
             //Register PlayerMoveEvent and PlayerToggleFlyingEvent
             _WGeventHandler = new PlayerEventRegionsHandler();
             getServer().getPluginManager().registerEvents(_WGeventHandler, this);   
-            getLogger().info("AntiPotionField " + this.getDescription().getVersion() + " by dualspiral and Eeavbles is now enabled.");
+            getLogger().info("AntiPotionField " + this.getDescription().getVersion() + " by dualspiral and Eevables is now enabled.");
     }
     
     @Override
