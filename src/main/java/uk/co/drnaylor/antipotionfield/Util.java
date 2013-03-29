@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import uk.co.drnaylor.antipotionfield.enums.EffectMeans;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
