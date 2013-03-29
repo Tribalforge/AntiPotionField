@@ -1,9 +1,5 @@
 package uk.co.drnaylor.antipotionfield.worldguardapi;
 
-/**
- *
- * @author Daniel R Naylor
- */
 public class WorldGuardAPIException extends Exception {
   
   public enum WorldGuardExceptions

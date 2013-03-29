@@ -15,7 +15,7 @@ public abstract class WorldGuardInit {
 		_isAvailable = false;
 	}
 	
-    /*
+    /**
      * This function checks to see if WorldGuard is enabled on the system without 
      * going through the checks again.
      * 
@@ -26,7 +26,7 @@ public abstract class WorldGuardInit {
 		return _isAvailable;
 	}
 	
-    /*
+    /**
      * This is a getter method, so we don't override the variable. Just in case.
      * We can only modify this variable within the class (so, only if we are re-checking for WG)
      * 
@@ -39,7 +39,7 @@ public abstract class WorldGuardInit {
 	
     //Is WG loaded?
     
-    /*
+    /**
      * This method checks to see if WorldGuard is loaded.
      * 
      * @param host  Reference to the currently running plugin (the class that extends JavaPlugin)
