@@ -7,8 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import uk.co.drnaylor.worldguardapi.WorldGuardAPIException;
-import uk.co.drnaylor.worldguardapi.WorldGuardInterface;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
 public abstract class Util {
 

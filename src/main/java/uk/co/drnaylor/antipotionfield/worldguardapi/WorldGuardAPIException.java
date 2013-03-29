@@ -1,4 +1,4 @@
-package uk.co.drnaylor.worldguardapi;
+package uk.co.drnaylor.antipotionfield.worldguardapi;
 
 /**
  *

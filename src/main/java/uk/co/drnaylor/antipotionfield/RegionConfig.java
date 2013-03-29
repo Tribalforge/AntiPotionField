@@ -1,6 +1,6 @@
 package uk.co.drnaylor.antipotionfield;
 
-import uk.co.drnaylor.configaccessor.ConfigAccessor;
+import uk.co.drnaylor.antipotionfield.configaccessor.ConfigAccessor;
 
 public class RegionConfig {
 

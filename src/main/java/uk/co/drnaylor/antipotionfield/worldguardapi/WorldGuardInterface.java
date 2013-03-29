@@ -1,4 +1,4 @@
-package uk.co.drnaylor.worldguardapi;
+package uk.co.drnaylor.antipotionfield.worldguardapi;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.LocalPlayer;
@@ -9,7 +9,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.ArrayList;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import uk.co.drnaylor.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
 
 public class WorldGuardInterface {
 

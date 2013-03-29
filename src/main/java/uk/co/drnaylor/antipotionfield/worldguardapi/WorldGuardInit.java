@@ -1,4 +1,4 @@
-package uk.co.drnaylor.worldguardapi;
+package uk.co.drnaylor.antipotionfield.worldguardapi;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.plugin.Plugin;

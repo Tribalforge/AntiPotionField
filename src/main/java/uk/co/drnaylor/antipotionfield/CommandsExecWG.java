@@ -9,9 +9,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import uk.co.drnaylor.worldguardapi.WorldGuardAPIException;
-import uk.co.drnaylor.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
-import uk.co.drnaylor.worldguardapi.WorldGuardInterface;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
 public class CommandsExecWG implements CommandExecutor {
 

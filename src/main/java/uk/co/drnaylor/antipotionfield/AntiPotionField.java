@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import org.bukkit.plugin.java.JavaPlugin;
-import uk.co.drnaylor.worldguardapi.WorldGuardInit;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInit;
 
 public class AntiPotionField extends JavaPlugin {
     

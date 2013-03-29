@@ -1,4 +1,4 @@
-package uk.co.drnaylor.configaccessor;
+package uk.co.drnaylor.antipotionfield.configaccessor;
 
 //This file was taken from https://gist.github.com/3174347
 
