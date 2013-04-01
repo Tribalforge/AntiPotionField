@@ -1,4 +1,4 @@
-package uk.co.drnaylor.worldguardapi;
+package uk.co.drnaylor.antipotionfield.worldguardapi;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.LocalPlayer;
@@ -9,7 +9,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.ArrayList;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import uk.co.drnaylor.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
 
 public class WorldGuardInterface {
 
@@ -23,7 +23,8 @@ public class WorldGuardInterface {
     }
   }
 
-  /* Get the regions at the players' location
+  /**
+   * Get the regions at the players' location
    * 
    * @param player  The player you wish to get the ApplicableRegions from
    * @returns A list of strings with the names of the applicable regions. This is null if there are no regions where the player is.
@@ -55,7 +56,8 @@ public class WorldGuardInterface {
     return regions;
   }
 
-  /* Gets the specifed region in the specified world. Throws WorldGuardAPIException if it fails
+  /** 
+   * Gets the specified region in the specified world. Throws WorldGuardAPIException if it fails
    * 
    * @param world World to look in
    * @param rg  Region to look for

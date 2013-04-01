@@ -9,14 +9,21 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import uk.co.drnaylor.worldguardapi.WorldGuardAPIException;
-import uk.co.drnaylor.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
-import uk.co.drnaylor.worldguardapi.WorldGuardInterface;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
+import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
+/**
+ * This class contains the old /apf command logic. With the new changes that are
+ * coming in, this command should be replaced.
+ * 
+ * @deprecated This command should be removed and replaced with a better set of
+ *             commands that is flexible enough to perform per-potion checking.
+ */
+@Deprecated
 public class CommandsExecWG implements CommandExecutor {
 
   public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-    // TODO Auto-generated method stub
 
     if (cmd.getName().equalsIgnoreCase("antipotionregion")) {
       //No parameters, 
