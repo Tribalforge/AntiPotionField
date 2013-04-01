@@ -74,7 +74,6 @@ public class PlayerEventRegionsHandler implements Listener {
                 return;
             }
 
-            //ArrayList <PotionEffect> canceledEffects = new ArrayList <PotionEffect> ();
             for (PotionEffect pe : potionEffects) {
                 if (deniedEffects.contains(pe.getType())) {
                     event.setCancelled(true); // We can try more complex checks later.
