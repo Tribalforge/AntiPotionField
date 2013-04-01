@@ -44,10 +44,29 @@ public class CommandsExecWG implements CommandExecutor {
         sender.sendMessage(ChatColor.RED + "Sorry, but you don't have permission to do that!");
         return true;
       }
-
-      if (args.length == 0) {
-        sender.sendMessage(ChatColor.GREEN + "Usage: " + ChatColor.YELLOW + "/antipotionregion <region> <allow|deny>");
-      } else if (args.length == 1) {
+      
+      /**
+       * New command syntax:
+       * /antipotionregion <region> <allow|deny> <potion> [type]
+       * 
+       * <region> is the region name; <allow|deny> specifies whether to allow or deny the potion;
+       * <potion> is the effect type; [type] is optional and defines whether the potion is splash, drink, or effect.
+       * If [type] isn't provided, the plugin will assume that it must be allowed or denied for all types.
+       */
+		
+		if (args.length == 0) { // No arguments provided!
+			sender.sendMessage(ChatColor.GREEN + "Usage: " + ChatColor.YELLOW + "/antipotionregion <region> <allow|deny>");	
+		} else if (args.length == 1) { // They have written something like "/antipotionregion <region>".
+			try {
+			
+			
+			} catch (WorldGuardAPIException e) {
+				
+			}
+		}
+		
+		
+		
         try
         {
         WorldGuardInterface wgi = new WorldGuardInterface();
