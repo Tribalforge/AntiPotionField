@@ -78,14 +78,14 @@ public class CommandsExecWG implements CommandExecutor {
 								String ef2 = ChatColor.YELLOW + "Denied potions: " + ChatColor.GRAY;
 								String ef3 = ChatColor.YELLOW + "Denied splashes: " + ChatColor.GRAY;
 
-								for (List<String> s1 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0] + ".deny-effects")) {
+								for (List<String> s1 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getWorld() + "." + args[0] + ".deny-effects")) {
 									ef1.concat(s1 + ", ");
 									// I realize this will end the list with a comma, but I can't be bothered to fix that right now...
 								}
-								for (List<String> s2 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0] + ".deny-potions")) {
+								for (List<String> s2 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getWorld() + "." + args[0] + ".deny-potions")) {
 									ef2.concat(s2 + ", ");
 								}
-								for (List<String> s3 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0] + ".deny-splashes")) {
+								for (List<String> s3 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getWorld() + "." + args[0] + ".deny-splashes")) {
 									ef3.concat(s3 + ", ");
 								}
 
@@ -158,19 +158,24 @@ public class CommandsExecWG implements CommandExecutor {
 					
 					if (rg != null) { // If the region exists...
 						
-						String configPath = "no-potion-effect-regions." + args[1 - argsOffset];
+						String configPath = "no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset];
 						if (!(AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection(configPath))) {
 							
 							/*
 							If this region has no configuration section in the config, set the following paths:
 							
-							"no-potion-effect-regions." + args[1 - argsOffset] + ".deny-effects"
-							"no-potion-effect-regions." + args[1 - argsOffset] + ".deny-potions"
-							"no-potion-effect-regions." + args[1 - argsOffset] + ".deny-splash"
+							"no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects"
+							"no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions"
+							"no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes"
 							
 							Then save the configuration.
 							*/
 							
+							loadRegionConfig();
+							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects", new List<String> ());
+							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions", new List<String> ());
+							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes", new List<String> ());
+							saveRegionConfig();
 						}
 						
 						// Get whether we're adding or removing from the list!
@@ -181,10 +186,12 @@ public class CommandsExecWG implements CommandExecutor {
 							deny = true;
 						}
 						
-						
-						// Get the potion type through the Util class using args[3 - argsOffset]
-						
-						
+						// Get the potion types through the Util class using args[3 - argsOffset]
+						List<String> effects = Util.getEffectString(args[3 - argsOffset]);
+						if (effects.isEmpty() || effects == null) {
+							sender.sendMessage(ChatColor.RED + "\"" + args[3 - argsOffset] + "\" isn't a potion effect or predefined list!");
+							return true;
+						}
 						
 						// If there's a fourth (or fifth) argument, use it to get the effect type. (args[4 - argsOffset])
 						// Otherwise, just apply it to every compatible list!
@@ -204,8 +211,10 @@ public class CommandsExecWG implements CommandExecutor {
 							addToAll = true; // Add it to every region.
 						}
 						
-						
 						// We should have everything we need at this point.
+						
+						
+						
 						
 						
 						
