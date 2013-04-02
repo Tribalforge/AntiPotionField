@@ -31,6 +31,15 @@ public abstract class Util {
         // positive.add(PotionEffectType.WITHER);
         positive.add(PotionEffectType.WATER_BREATHING);
     }
+    
+    public static List<String> getEffectString(String args) {
+    	
+    	
+    	
+    	
+    	
+    	return new List<String>();
+    }
 
     /**
      * Gets the list of regions at a player's location and returns them in a
