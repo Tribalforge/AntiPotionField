@@ -41,7 +41,7 @@ public class CommandsExecWG implements CommandExecutor {
 				return true;
 			}
 
-			/**
+			/*
 			 * New command syntax:
 			 * /antipotionregion <region> <allow|deny> <potion|positive|negative|all> [type]
 			 * 
@@ -52,7 +52,9 @@ public class CommandsExecWG implements CommandExecutor {
 
 			if (args.length == 0) { // No arguments provided!
 				sender.sendMessage(ChatColor.GREEN + "Usage: " + ChatColor.YELLOW + "/antipotionregion <region> <allow|deny>");	
+			
 			} else if (args.length == 1) { // They have written something like "/antipotionregion <region>".
+				
 				try {
 					WorldGuardInterface wgi = new WorldGuardInterface();
 					List<World> worlds;
@@ -101,10 +103,31 @@ public class CommandsExecWG implements CommandExecutor {
 
 
 				} catch (WorldGuardAPIException e) {
-					sender.sendMessage(ChatColor.YELLOW + "WorldGuard is not currently enabled");
+					sender.sendMessage(ChatColor.YELLOW + "WorldGuard is not currently enabled!");
 				}
+			
+			} else if (args.length == 2) {
+				// /antipotionregion region allow? Not enough now!
+				// For a player, anyways. I'll add console compatibilities for region checking later.
 				
+				if (!(sender instanceof Player)) {
+					sender.sendMessage("Console usage isn't quite supported yet!");
+					return true;
+				} else {
+					sender.sendMessage(ChatColor.RED + "Too few arguments!");
+					sender.sendMessage(ChatColor.GREEN + "Usage: " + ChatColor.YELLOW + "/antipotionregion <region> <allow|deny> <potion|positive|negative|all> [type]");	
+					return true;
+				}
+			} else if (args.length >= 3) { // If they provide the region, allow|deny, an effect, and a possible type
 				
+				// If there's a fourth argument, use it to get the effect type.
+				// Otherwise, just apply it to every compatible list!
+				
+			}
+			
+			
+			
+			/*
 			} else if (args.length == 2) {
 				try {
 					WorldGuardInterface wgi = new WorldGuardInterface();
@@ -125,7 +148,6 @@ public class CommandsExecWG implements CommandExecutor {
 					} else {
 						sender.sendMessage(ChatColor.RED + "Hey Console! You need to specify the world too! (antipotionregion <world> <region> <allow|deny>");
 						return true;
-						//worlds = staticReferences.plugin.getServer().getWorlds();
 					}
 
 					List<String> regionList;
@@ -199,6 +221,10 @@ public class CommandsExecWG implements CommandExecutor {
 				} catch (WorldGuardAPIException ex) {
 					sender.sendMessage(ChatColor.YELLOW + "WorldGuard is not currently enabled");
 				}
+				
+				*/
+			
+			/*
 			} else if (args.length == 3) { // /flyregion <world> <rg> <allow|deny>
 				try {
 					WorldGuardInterface wgi = new WorldGuardInterface();
@@ -296,6 +322,7 @@ public class CommandsExecWG implements CommandExecutor {
 					}
 				}
 			}
+			*/
 		}
 
 		return false;
