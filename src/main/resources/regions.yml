@@ -1,5 +1,6 @@
 no-potion-effect-regions:
-    __global__:
-        deny-effects: []
-        deny-potions: []
-        deny-splash: []
+    world:
+        __global__:
+            deny-effects: []
+            deny-potions: []
+            deny-splash: []
