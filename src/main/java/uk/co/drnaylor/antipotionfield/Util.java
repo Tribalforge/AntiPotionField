@@ -32,13 +32,26 @@ public abstract class Util {
         positive.add(PotionEffectType.WATER_BREATHING);
     }
     
+	
+    // Try to change this to handle an array so multiple effects in one command can be supported.
     public static List<String> getEffectString(String args) {
+	List<String> effects = new List<String> ();
+    	if (args.equalsIgnoreCase("haste")) {
+    		effects.add("FAST_DIGGING");
+    	}
+    	if (args.equalsIgnoreCase("fireresistance") || args.equalsIgnoreCase("fireres")) {
+    		effects.add("FIRE_RESISTANCE");
+    	}
+    	if (args.equalsIgnoreCase("harming")) {
+    		effects.add("HARM");
+    	}
+    	if (args.equalsIgnoreCase("healing")) {
+    		effects.add("HEAL");
+    	}
     	
-    	
-    	
-    	
-    	
-    	return new List<String>();
+    	// Add the rest of the effects!
+	
+    	return effects;
     }
 
     /**
