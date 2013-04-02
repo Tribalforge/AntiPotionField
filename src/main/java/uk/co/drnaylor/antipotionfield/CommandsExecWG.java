@@ -120,9 +120,108 @@ public class CommandsExecWG implements CommandExecutor {
 				}
 			} else if (args.length >= 3) { // If they provide the region, allow|deny, an effect, and a possible type
 				
-				// If there's a fourth argument, use it to get the effect type.
-				// Otherwise, just apply it to every compatible list!
-				
+				try {
+					WorldGuardInterface wgi = new WorldGuardInterface();
+					World world = null;
+					ProtectedRegion rg;
+					int argsOffset = 0;
+					
+					if (!(sender instanceof Player)) {
+						// The console must supply a world, so they must have four arguments (optionally five).
+						// /antipotionregion worldName regionName potionEffect type
+						if (args.length > 3) { // If the console provided at least four arguments...
+							argsOffset = 0;
+							
+							// args[0] should be the world.
+							world = sender.getServer().getWorld(args[0]);
+							if (world == null) {
+								sender.sendMessage(ChatColor.RED + "World " + args[0] + " doesn't exist!");
+								return true;
+							}
+							
+						} else {
+							sender.sendMessage(ChatColor.YELLOW + "Hey, Console! We need the world name as well!");
+							sender.sendMessage(ChatColor.GREEN + "/antipotionregion <world> <region> <allow|deny> <potion> [type]");
+							return true;
+						}
+					} else { // The command sender is a Player.
+						argsOffset = 1;
+						Player player = (Player)sender;
+						world = player.getWorld();
+						if (world == null) { // Just in case.
+							sender.sendMessage(ChatColor.RED + "You're apparently not in a world!");
+							return true;
+						}
+					}
+					
+					rg = wgi.getRegion(world, args[1 - argsOffset]); // The region name is args[0] for the player, or args[1] for the console.
+					
+					if (rg != null) { // If the region exists...
+						
+						String configPath = "no-potion-effect-regions." + args[1 - argsOffset];
+						if (!(AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection(configPath))) {
+							
+							/*
+							If this region has no configuration section in the config, set the following paths:
+							
+							"no-potion-effect-regions." + args[1 - argsOffset] + ".deny-effects"
+							"no-potion-effect-regions." + args[1 - argsOffset] + ".deny-potions"
+							"no-potion-effect-regions." + args[1 - argsOffset] + ".deny-splash"
+							
+							Then save the configuration.
+							*/
+							
+						}
+						
+						// Get whether we're adding or removing from the list!
+						boolean deny;
+						if (args[2 - argsOffset].equalsIgnoreCase("allow") || args[2 - argsOffset].equalsIgnoreCase("a")) {
+							deny = false;
+						} else if (args[2 - argsOffset].equalsIgnoreCase("deny") || args[2 - argsOffset].equalsIgnoreCase("d")) {
+							deny = true;
+						}
+						
+						
+						// Get the potion type through the Util class using args[3 - argsOffset]
+						
+						
+						
+						// If there's a fourth (or fifth) argument, use it to get the effect type. (args[4 - argsOffset])
+						// Otherwise, just apply it to every compatible list!
+						boolean addToAll;
+						if (args.length == (4 - argsOffset)) {
+							if (args[4 - argsOffset].equalsIgnoreCase("EFFECT")) {
+								configPath.concat(".deny-effects");
+								addToAll = false;
+							} else if (args[4 - argsOffset].equalsIgnoreCase("POTION")) {
+								configPath.concat(".deny-potions");
+								addToAll = false;
+							} else if (args[4 - argsOffset].equalsIgnoreCase("SPLASH")) {
+								configPath.concat(".deny-splash");
+								addToAll = false;
+							}
+						} else {
+							addToAll = true; // Add it to every region.
+						}
+						
+						
+						// We should have everything we need at this point.
+						
+						
+						
+						
+						
+					} else {
+						sender.sendMessage(ChatColor.RED + "The region " + args[1 - argsOffset] + " does not exist!");
+						return true;
+					}
+					
+					
+					
+				} catch (WorldGuardAPIException error) {
+					sender.sendMessage(ChatColor.DARK_RED + "WorldGuard is not currently enabled!");
+					return true;
+				}
 			}
 			
 			
