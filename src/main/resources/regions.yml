@@ -3,4 +3,4 @@ no-potion-effect-regions:
         __global__:
             deny-effects: []
             deny-potions: []
-            deny-splash: []
+            deny-splashes: []
