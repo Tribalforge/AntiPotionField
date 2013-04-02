@@ -47,10 +47,10 @@ public class CommandsExecWG implements CommandExecutor {
       
       /**
        * New command syntax:
-       * /antipotionregion <region> <allow|deny> <potion> [type]
+       * /antipotionregion <region> <allow|deny> <potion|positive|negative|all> [type]
        * 
        * <region> is the region name; <allow|deny> specifies whether to allow or deny the potion;
-       * <potion> is the effect type; [type] is optional and defines whether the potion is splash, drink, or effect.
+       * <potion> is the effect type (or predefined list of types); [type] is optional and defines whether the potion is splash, drink, or effect.
        * If [type] isn't provided, the plugin will assume that it must be allowed or denied for all types.
        */
 		
@@ -58,55 +58,56 @@ public class CommandsExecWG implements CommandExecutor {
 			sender.sendMessage(ChatColor.GREEN + "Usage: " + ChatColor.YELLOW + "/antipotionregion <region> <allow|deny>");	
 		} else if (args.length == 1) { // They have written something like "/antipotionregion <region>".
 			try {
-			
-			
+				WorldGuardInterface wgi = new WorldGuardInterface();
+		        List<World> worlds;
+		        if (sender instanceof Player) {
+		          Player player = ((Player) sender).getPlayer();
+		          World world = player.getWorld();
+		          worlds = new ArrayList<World>();
+		          worlds.add(world);
+		        } else {
+		          worlds = AntiPotionField.plugin.getServer().getWorlds();
+		        }
+		        
+		        for (World world : worlds) {
+		        	ProtectedRegion rg = wgi.getRegion(world, args[0]);
+		        	if (rg != null) { // If the region exists...
+		        		if (AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0])) {
+		        			// If a section for this region exists in the configuration file...
+		        			sender.sendMessage(ChatColor.YELLOW + "This region denies the following effects and types:");
+		        			
+		        			String ef1 = ChatColor.YELLOW + "Denied effects: " + ChatColor.GRAY;
+		        			String ef2 = ChatColor.YELLOW + "Denied potions: " + ChatColor.GRAY;
+		        			String ef3 = ChatColor.YELLOW + "Denied splashes: " + ChatColor.GRAY;
+		        			
+		        			for (List<String> s1 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0] + ".deny-effects")) {
+		        				ef1.concat(s1 + ", ");
+		        				// I realize this will end the list with a comma, but I can't be bothered to fix that right now...
+		        			}
+		        			for (List<String> s2 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0] + ".deny-potions")) {
+		        				ef2.concat(s2 + ", ");
+		        			}
+		        			for (List<String> s3 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0] + ".deny-splashes")) {
+		        				ef3.concat(s3 + ", ");
+		        			}
+		        			
+		        			sender.sendMessage(ef1);
+		        			sender.sendMessage(ef2);
+		        			sender.sendMessage(ef3);
+		        			
+		        		} else {
+		        			sender.sendMessage(ChatColor.YELLOW + "This region has no denied potions associated with it.");
+		        		}
+		        	} else {
+		        		sender.sendMessage(ChatColor.YELLOW + "The region " + args[0] + " cannot be found.");
+		        	}
+		        }
+		    
+		        
 			} catch (WorldGuardAPIException e) {
-				
+				sender.sendMessage(ChatColor.YELLOW + "WorldGuard is not currently enabled");
 			}
-		}
-		
-		
-		
-        try
-        {
-        WorldGuardInterface wgi = new WorldGuardInterface();
-        List<World> worlds;
-        if (sender instanceof Player) {
-          Player player = ((Player) sender).getPlayer();
-          World world = player.getWorld();
-          worlds = new ArrayList<World>();
-          worlds.add(world);
-        } else {
-          worlds = AntiPotionField.plugin.getServer().getWorlds();
-        }
-
-        for (World world : worlds) {
-          ProtectedRegion rg = wgi.GetRegion(world, args[0]);
-          if (rg != null) {
-            if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + world.getName()).contains(rg.getId())) {
-              sender.sendMessage(ChatColor.RED + "Potions are disabled in WG region " + rg.getId() + " in world \"" + world.getName() + "\"");
-            } else {
-              sender.sendMessage(ChatColor.GREEN + "Potions are enabled in WG region " + rg.getId() + " in world \"" + world.getName() + "\"");
-            }
-
-            return true;
-          }
-          else if ("__global__".equalsIgnoreCase(args[0]))
-          {
-            if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + world.getName()).contains("__global__")) {
-              sender.sendMessage(ChatColor.RED + "Potions is disabled in world \"" + world.getName() + "\"");
-            } else {
-              sender.sendMessage(ChatColor.GREEN + "Potions is enabled in world \"" + world.getName() + "\"");
-            }
-          }
-        }
-        sender.sendMessage(ChatColor.YELLOW + "The region " + args[0] + " cannot be found.");
-        }
-        catch (WorldGuardAPIException e)
-        {
-           sender.sendMessage(ChatColor.YELLOW + "WorldGuard is not currently enabled");
-        }
-      } else if (args.length == 2) {
+		} else if (args.length == 2) {
         try {
           WorldGuardInterface wgi = new WorldGuardInterface();
           World world;
