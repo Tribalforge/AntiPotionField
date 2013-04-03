@@ -172,26 +172,38 @@ public class CommandsExecWG implements CommandExecutor {
 							*/
 							
 							loadRegionConfig();
-							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects", new List<String> ());
-							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions", new List<String> ());
-							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes", new List<String> ());
+							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects", new ArrayList<String> ());
+							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions", new ArrayList<String> ());
+							AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes", new ArrayList<String> ());
 							saveRegionConfig();
 						}
 						
 						// Get whether we're adding or removing from the list!
-						boolean deny;
+						boolean denying;
 						if (args[2 - argsOffset].equalsIgnoreCase("allow") || args[2 - argsOffset].equalsIgnoreCase("a")) {
-							deny = false;
+							denying = false;
 						} else if (args[2 - argsOffset].equalsIgnoreCase("deny") || args[2 - argsOffset].equalsIgnoreCase("d")) {
-							deny = true;
+							denying = true;
 						}
 						
 						// Get the potion types through the Util class using args[3 - argsOffset]
 						//List<String> effects = Util.getEffectString(args[3 - argsOffset]);
 						String[] pArgs = args[3 - argsOffset].split(",");
-						List<String> effects = Util.getFriendlyEffectNames(pArgs);
+						//List<String> effects = Util.getFriendlyEffectNames(pArgs);
+						List<String> effects = new ArrayList<String> ();
+						for (int k = 0; k < pArgs.length; k++) {
+							List<String> newEff = Util.getFriendlyEffectNames(new String[] {pArgs[k]});
+							if (newEff.isEmpty()) {
+								sender.sendMessage(ChatColor.RED + "\"" + pArgs[k] + "\" isn't a potion effect!");
+							} else {
+								for (String s : newEff) {
+									effects.add(s);
+								}
+							}
+						}
 						if (effects.isEmpty() || effects == null) {
-							sender.sendMessage(ChatColor.RED + "\"" + args[3 - argsOffset] + "\" isn't a potion effect or predefined list!");
+						//	sender.sendMessage(ChatColor.RED + "\"" + args[3 - argsOffset] + "\" isn't a potion effect or predefined list!");
+							sender.sendMessage(ChatColor.RED + "No applicable potion effects were found.");
 							return true;
 						}
 						
@@ -214,8 +226,9 @@ public class CommandsExecWG implements CommandExecutor {
 						}
 						
 						// We should have everything we need at this point.
+						loadRegionConfig();
 						
-						
+						ArrayList<String> effectListFromConfig = AntiPotionField.regions.getRegionConfig().getConfig().get(configPath);
 						
 						
 						

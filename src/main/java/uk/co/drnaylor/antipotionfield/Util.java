@@ -13,9 +13,9 @@ import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
 public abstract class Util {
 
-    public static Collection<PotionEffectType> positive;
-    public static Collection<PotionEffectType> negative;
-    public static Collection<PotionEffectType> all;
+    public static List<PotionEffectType> positive;
+    public static List<PotionEffectType> negative;
+    public static List<PotionEffectType> all;
 	
 	
 	//For the sake of my reference, the names of all PotionEffectTypes:
