@@ -68,7 +68,7 @@ public class CommandsExecWG implements CommandExecutor {
 					}
 
 					for (World world : worlds) {
-						ProtectedRegion rg = wgi.getRegion(world, args[0]);
+						ProtectedRegion rg = wgi.GetRegion(world, args[0]);
 						if (rg != null) { // If the region exists...
 							if (AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + args[0])) {
 								// If a section for this region exists in the configuration file...
@@ -78,18 +78,22 @@ public class CommandsExecWG implements CommandExecutor {
 								String ef2 = ChatColor.YELLOW + "Denied potions: " + ChatColor.GRAY;
 								String ef3 = ChatColor.YELLOW + "Denied splashes: " + ChatColor.GRAY;
 
-								for (List<String> s1 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-effects")) {
-									ef1.concat(s1 + ", ");
+								for (String s1 : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-effects")) {
+                                    ef1.concat(s1 + ", ");
 									// I realize this will end the list with a comma, but I can't be bothered to fix that right now...
 								}
-								for (List<String> s2 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-potions")) {
+								for (String s2 : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-potions")) {
 									ef2.concat(s2 + ", ");
 								}
-								for (List<String> s3 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-splashes")) {
+								for (String s3 : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-splashes")) {
 									ef3.concat(s3 + ", ");
 								}
-
-								sender.sendMessage(ef1);
+                                
+                                ef1 = ef1.substring(0, ef1.lastIndexOf(",") - 1);
+                                ef2 = ef2.substring(0, ef2.lastIndexOf(",") - 1);
+                                ef3 = ef3.substring(0, ef3.lastIndexOf(",") - 1);
+								
+                                sender.sendMessage(ef1);
 								sender.sendMessage(ef2);
 								sender.sendMessage(ef3);
 
@@ -154,7 +158,7 @@ public class CommandsExecWG implements CommandExecutor {
 						}
 					}
 					
-					rg = wgi.getRegion(world, args[1 - argsOffset]); // The region name is args[0] for the player, or args[1] for the console.
+					rg = wgi.GetRegion(world, args[1 - argsOffset]); // The region name is args[0] for the player, or args[1] for the console.
 					
 					if (rg != null) { // If the region exists...
 						

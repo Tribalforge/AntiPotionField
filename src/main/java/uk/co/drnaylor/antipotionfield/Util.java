@@ -48,12 +48,8 @@ public abstract class Util {
         negative.add(PotionEffectType.WITHER);
         
         all = new ArrayList<PotionEffectType> ();
-        for (PotionEffectType p : positive) {
-        	all.add(positive.get(p));
-        }
-        for (PotionEffectType n : negative) {
-        	all.add(negative.get(n));
-        }
+        all.addAll(positive);
+        all.addAll(negative);
     }
     
 	/**
@@ -63,7 +59,7 @@ public abstract class Util {
      * @return A StringList with the requested names. The List will be empty if there were no matches.
      */
     public static List<String> getFriendlyEffectNames(String[] args) {
-    	List<String> effects = new List<String> ();
+    	List<String> effects = new ArrayList<String> ();
     	for (int c = 0; c < args.length; c++) {
     		if (args[c].equalsIgnoreCase("blindness") || args[c].equalsIgnoreCase("blind")) {
     			if (!(effects.contains(PotionEffectType.BLINDNESS.getName()))) {
