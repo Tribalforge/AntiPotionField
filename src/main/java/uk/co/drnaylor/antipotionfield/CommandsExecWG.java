@@ -78,14 +78,14 @@ public class CommandsExecWG implements CommandExecutor {
 								String ef2 = ChatColor.YELLOW + "Denied potions: " + ChatColor.GRAY;
 								String ef3 = ChatColor.YELLOW + "Denied splashes: " + ChatColor.GRAY;
 
-								for (List<String> s1 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getWorld() + "." + args[0] + ".deny-effects")) {
+								for (List<String> s1 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-effects")) {
 									ef1.concat(s1 + ", ");
 									// I realize this will end the list with a comma, but I can't be bothered to fix that right now...
 								}
-								for (List<String> s2 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getWorld() + "." + args[0] + ".deny-potions")) {
+								for (List<String> s2 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-potions")) {
 									ef2.concat(s2 + ", ");
 								}
-								for (List<String> s3 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getWorld() + "." + args[0] + ".deny-splashes")) {
+								for (List<String> s3 : AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-splashes")) {
 									ef3.concat(s3 + ", ");
 								}
 
