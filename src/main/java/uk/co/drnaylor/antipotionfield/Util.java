@@ -14,45 +14,160 @@ import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 public abstract class Util {
 
     public static Collection<PotionEffectType> positive;
-
+    public static Collection<PotionEffectType> negative;
+    public static Collection<PotionEffectType> all;
+	
+	
+	//For the sake of my reference, the names of all PotionEffectTypes:
+	//BLINDNESS, CONFUSION, DAMAGE_RESISTANCE, FAST_DIGGING, FIRE_RESISTANCE, HARM, HEAL,
+	//HUNGER, INCREASE_DAMAGE, INVISIBILITY, JUMP, NIGHT_VISION, POISON, REGENERATION, SLOW,
+	//SLOW_DIGGING, SPEED, WATER_BREATHING, WEAKNESS, WITHER
     public static void InitArrays() {
         positive = new ArrayList<PotionEffectType>();
         positive.add(PotionEffectType.DAMAGE_RESISTANCE);
         positive.add(PotionEffectType.FAST_DIGGING);
         positive.add(PotionEffectType.FIRE_RESISTANCE);
         positive.add(PotionEffectType.HEAL);
-        positive.add(PotionEffectType.HUNGER);
         positive.add(PotionEffectType.INCREASE_DAMAGE);
         positive.add(PotionEffectType.INVISIBILITY);
         positive.add(PotionEffectType.JUMP);
         positive.add(PotionEffectType.NIGHT_VISION);
         positive.add(PotionEffectType.REGENERATION);
         positive.add(PotionEffectType.SPEED);
-        // positive.add(PotionEffectType.WITHER);
         positive.add(PotionEffectType.WATER_BREATHING);
+        
+        negative = new ArrayList<PotionEffectType> ();
+        negative.add(PotionEffectType.BLINDNESS);
+        negative.add(PotionEffectType.CONFUSION);
+        negative.add(PotionEffectType.HARM);
+        negative.add(PotionEffectType.HUNGER);
+        negative.add(PotionEffectType.POISON);
+        negative.add(PotionEffectType.SLOW);
+        negative.add(PotionEffectType.SLOW_DIGGING);
+        negative.add(PotionEffectType.WEAKNESS);
+        negative.add(PotionEffectType.WITHER);
+        
+        all = new ArrayList<PotionEffectType> ();
+        for (PotionEffectType p : positive) {
+        	all.add(positive.get(p));
+        }
+        for (PotionEffectType n : negative) {
+        	all.add(negative.get(n));
+        }
     }
     
-	
-    // Try to change this to handle an array so multiple effects in one command can be supported.
-    public static List<String> getEffectString(String args) {
-	List<String> effects = new List<String> ();
-    	if (args.equalsIgnoreCase("haste")) {
-    		effects.add("FAST_DIGGING");
+	/**
+     * Gets the configuration-friendly effect names for a passed String array.
+     * It will avoid adding duplicates to the list.
+     * @param args The passed String array to translate into friendly effect names.
+     * @return A StringList with the requested names. The List will be empty if there were no matches.
+     */
+    public static List<String> getFriendlyEffectNames(String[] args) {
+    	List<String> effects = new List<String> ();
+    	for (int c = 0; c < args.length; c++) {
+    		if (args[c].equalsIgnoreCase("blindness") || args[c].equalsIgnoreCase("blind")) {
+    			if (!(effects.contains(PotionEffectType.BLINDNESS.getName()))) {
+    				effects.add(PotionEffectType.BLINDNESS.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("confusion") || args[c].equalsIgnoreCase("confuse")) {
+    			if (!(effects.contains(PotionEffectType.CONFUSION.getName()))) {
+    				effects.add(PotionEffectType.CONFUSION.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("resistance") || args[c].equalsIgnoreCase("damageresist") || args[c].equalsIgnoreCase("damageresistance")) {
+    			if (!(effects.contains(PotionEffectType.DAMAGE_RESISTANCE.getName()))) {
+    				effects.add(PotionEffectType.DAMAGE_RESISTANCE.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("haste") || args[c].equalsIgnoreCase("fastdigging")) {
+    			if (!(effects.contains(PotionEffectType.FAST_DIGGING.getName()))) {
+    				effects.add(PotionEffectType.FAST_DIGGING.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("fireresistance") || args[c].equalsIgnoreCase("fireres")) {
+    			if (!(effects.contains(PotionEffectType.FIRE_RESISTANCE.getName()))) {
+    				effects.add(PotionEffectType.FIRE_RESISTANCE.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("harming") || args[c].equalsIgnoreCase("harm")) {
+    			if (!(effects.contains(PotionEffectType.HARM.getName()))) {
+    				effects.add(PotionEffectType.HARM.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("healing") || args[c].equalsIgnoreCase("heal")) {
+    			if (!(effects.contains(PotionEffectType.HEAL.getName()))) {
+    				effects.add(PotionEffectType.HEAL.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("starving") || args[c].equalsIgnoreCase("starvation") || args[c].equalsIgnoreCase("hunger")) {
+    			if (!(effects.contains(PotionEffectType.HUNGER.getName()))) {
+    				effects.add(PotionEffectType.HUNGER.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("strength") || args[c].equalsIgnoreCase("increasedamage")) {
+    			if (!(effects.contains(PotionEffectType.INCREASE_DAMAGE.getName()))) {
+    				effects.add(PotionEffectType.INCREASE_DAMAGE.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("invisibility") || args[c].equalsIgnoreCase("invis")) {
+    			if (!(effects.contains(PotionEffectType.INVISIBILITY.getName()))) {
+    				effects.add(PotionEffectType.INVISIBILITY.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("jump") || args[c].equalsIgnoreCase("height")) {
+    			if (!(effects.contains(PotionEffectType.JUMP.getName()))) {
+    				effects.add(PotionEffectType.JUMP.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("nightvision")) {
+    			if (!(effects.contains(PotionEffectType.NIGHT_VISION.getName()))) {
+    				effects.add(PotionEffectType.NIGHT_VISION.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("poison") || args[c].equalsIgnoreCase("poisoning")) {
+    			if (!(effects.contains(PotionEffectType.POISON.getName()))) {
+    				effects.add(PotionEffectType.POISON.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("regeneration") || args[c].equalsIgnoreCase("regen")) {
+    			if (!(effects.contains(PotionEffectType.REGENERATION.getName()))) {
+    				effects.add(PotionEffectType.REGENERATION.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("slowness") || args[c].equalsIgnoreCase("slow")) {
+    			if (!(effects.contains(PotionEffectType.SLOW.getName()))) {
+    				effects.add(PotionEffectType.SLOW.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("slowdigging") || args[c].equalsIgnoreCase("slow_digging")) {
+    			if (!(effects.contains(PotionEffectType.SLOW_DIGGING.getName()))) {
+    				effects.add(PotionEffectType.SLOW_DIGGING.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("swiftness") || args[c].equalsIgnoreCase("speed")) {
+    			if (!(effects.contains(PotionEffectType.SPEED.getName()))) {
+    				effects.add(PotionEffectType.SPEED.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("waterbreathing") || args[c].equalsIgnoreCase("respiration")) {
+    			if (!(effects.contains(PotionEffectType.WATER_BREATHING.getName()))) {
+    				effects.add(PotionEffectType.WATER_BREATHING.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("weakness") || args[c].equalsIgnoreCase("weak")) {
+    			if (!(effects.contains(PotionEffectType.WEAKNESS.getName()))) {
+    				effects.add(PotionEffectType.WEAKNESS.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("wither") || args[c].equalsIgnoreCase("withering")) {
+    			if (!(effects.contains(PotionEffectType.WITHER.getName()))) {
+    				effects.add(PotionEffectType.WITHER.getName());
+    			}
+    		} else if (args[c].equalsIgnoreCase("positive")) { // If the String wants all positive effects...
+    			for (PotionEffectType p : positive) {
+    				if (!(effects.contains(p.getName()))) {
+    					effects.add(p.getName());
+    				}
+    			}
+    		} else if (args[c].equalsIgnoreCase("negative")) { // If the String wants all negative effects...
+    			for (PotionEffectType n : negative) {
+    				if (!(effects.contains(n.getName()))) {
+    					effects.add(n.getName());
+    				}
+    			}
+    		} else if (args[c].equalsIgnoreCase("all")) { // If the String wants all effects...
+    			for (PotionEffectType a : all) {
+    				if (!(effects.contains(a.getName()))) {
+    					effects.add(a.getName());
+    				}
+    			}
+    		}
     	}
-    	if (args.equalsIgnoreCase("fireresistance") || args.equalsIgnoreCase("fireres")) {
-    		effects.add("FIRE_RESISTANCE");
-    	}
-    	if (args.equalsIgnoreCase("harming")) {
-    		effects.add("HARM");
-    	}
-    	if (args.equalsIgnoreCase("healing")) {
-    		effects.add("HEAL");
-    	}
-    	
-    	// Add the rest of the effects!
-	
     	return effects;
     }
+    
 
     /**
      * Gets the list of regions at a player's location and returns them in a
