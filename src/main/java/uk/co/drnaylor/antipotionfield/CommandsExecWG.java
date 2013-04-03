@@ -187,7 +187,9 @@ public class CommandsExecWG implements CommandExecutor {
 						}
 						
 						// Get the potion types through the Util class using args[3 - argsOffset]
-						List<String> effects = Util.getEffectString(args[3 - argsOffset]);
+						//List<String> effects = Util.getEffectString(args[3 - argsOffset]);
+						String[] pArgs = args[3 - argsOffset].split(",");
+						List<String> effects = Util.getFriendlyEffectNames(pArgs);
 						if (effects.isEmpty() || effects == null) {
 							sender.sendMessage(ChatColor.RED + "\"" + args[3 - argsOffset] + "\" isn't a potion effect or predefined list!");
 							return true;
@@ -204,7 +206,7 @@ public class CommandsExecWG implements CommandExecutor {
 								configPath.concat(".deny-potions");
 								addToAll = false;
 							} else if (args[4 - argsOffset].equalsIgnoreCase("SPLASH")) {
-								configPath.concat(".deny-splash");
+								configPath.concat(".deny-splashes");
 								addToAll = false;
 							}
 						} else {
