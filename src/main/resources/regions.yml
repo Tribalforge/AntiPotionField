@@ -1,1 +1,6 @@
-denypositiveregions:
+no-potion-effect-regions:
+    world:
+        __global__:
+            deny-effects: []
+            deny-potions: []
+            deny-splashes: []
