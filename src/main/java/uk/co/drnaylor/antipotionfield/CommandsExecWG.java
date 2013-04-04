@@ -259,9 +259,38 @@ public class CommandsExecWG implements CommandExecutor {
 						// We should have everything we need at this point, so let's start doing things!
 						loadRegionConfig();
 						
+						// boolean denying, ArrayList effects
+						
 						for (String curPath : paths) {
-							ArrayList<String> regionEffectList = AntiPotionField.regions.getRegionConfig().getConfig().get(curPath);
+							ArrayList<String> regionEffectList = AntiPotionField.regions.getRegionConfig().getConfig().getStringList(curPath);
 							
+							String currentType = "";
+							if (curPath.contains("deny-effects")) {
+								currentType = "Effect";
+							} else if (curPath.contains("deny-potions")) {
+								currentType = "Potion";
+							} else if (curPath.contains("deny-splashes")) {
+								currentType = "Splash";
+							}
+							
+							if (denying) { // If we are adding to the list...
+								for (String e : effects) {
+									if (!(regionEffectList.contains(e))) { // If the list doesn't already have this effect in it...
+										regionEffectList.add(e)); // Add the new effect on to the end!
+										
+										sender.sendMessage(ChatColor.YELLOW + "Denied " + currentType.toLowerCase() + "  \"" + e + "\" in region \"" + args[1 - argsOffset] + "\".");
+									} else { // This effect is already denied.
+										sender.sendMessage(ChatColor.GRAY + currentType + " \"" + e + "\" is already denied in region \"" + args[1 - argsOffset] + "\".");
+									}
+								}
+								
+								AntiPotionField.regions.getRegionConfig().getConfig().set(curPath,regionEffectList); // Save the new list to the configuration file.
+								
+							} else { // If we are removing from the list...
+								
+								
+								
+							}
 							
 						}
 						
