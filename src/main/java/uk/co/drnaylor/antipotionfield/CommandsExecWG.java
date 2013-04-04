@@ -151,7 +151,7 @@ public class CommandsExecWG implements CommandExecutor {
 				
 				try {
 					WorldGuardInterface wgi = new WorldGuardInterface();
-					World world = null;
+					World world;
 					ProtectedRegion rg;
 					int argsOffset = 0;
 					
@@ -213,7 +213,11 @@ public class CommandsExecWG implements CommandExecutor {
 							denying = false;
 						} else if (args[2 - argsOffset].equalsIgnoreCase("deny") || args[2 - argsOffset].equalsIgnoreCase("d")) {
 							denying = true;
-						}
+						} else { // Catch other letters
+                            sender.sendMessage(ChatColor.RED + "Incorrect parameter (expecting allow or deny)");
+                            return true;
+                        }
+                        
 						
 						// Get the potion types through the Util class using args[3 - argsOffset]
 						//List<String> effects = Util.getEffectString(args[3 - argsOffset]);
@@ -230,7 +234,7 @@ public class CommandsExecWG implements CommandExecutor {
 								}
 							}
 						}
-						if (effects.isEmpty() || effects == null) {
+						if (effects.isEmpty()) {
 						//	sender.sendMessage(ChatColor.RED + "\"" + args[3 - argsOffset] + "\" isn't a potion effect or predefined list!");
 							sender.sendMessage(ChatColor.RED + "No applicable potion effects were found.");
 							return true;
@@ -262,7 +266,7 @@ public class CommandsExecWG implements CommandExecutor {
 						// boolean denying, ArrayList effects
 						
 						for (String curPath : paths) {
-							ArrayList<String> regionEffectList = AntiPotionField.regions.getRegionConfig().getConfig().getStringList(curPath);
+							List<String> regionEffectList = AntiPotionField.regions.getRegionConfig().getConfig().getStringList(curPath);
 							
 							String currentType = "";
 							if (curPath.contains("deny-effects")) {
@@ -276,7 +280,7 @@ public class CommandsExecWG implements CommandExecutor {
 							if (denying) { // If we are adding to the list...
 								for (String e : effects) {
 									if (!(regionEffectList.contains(e))) { // If the list doesn't already have this effect in it...
-										regionEffectList.add(e)); // Add the new effect on to the end!
+										regionEffectList.add(e); // Add the new effect on to the end!
 										
 										sender.sendMessage(ChatColor.YELLOW + "Denied " + currentType.toLowerCase() + "  \"" + e + "\" in region \"" + args[1 - argsOffset] + "\".");
 									} else { // This effect is already denied.
