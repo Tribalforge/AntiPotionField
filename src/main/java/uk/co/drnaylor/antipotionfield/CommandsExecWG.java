@@ -16,7 +16,6 @@ import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 /**
  * This class is currently being renovated to account for new changes.
  */
-@Deprecated
 public class CommandsExecWG implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
