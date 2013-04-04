@@ -157,7 +157,7 @@ public class CommandsExecWG implements CommandExecutor {
 					
 					if (!(sender instanceof Player)) {
 						// The console must supply a world, so they must have four arguments (optionally five).
-						// /antipotionregion worldName regionName potionEffect type
+						// /antipotionregion worldName regionName allow|deny potionEffect type
 						if (args.length > 3) { // If the console provided at least four arguments...
 							argsOffset = 0;
 							
@@ -238,29 +238,32 @@ public class CommandsExecWG implements CommandExecutor {
 						
 						// If there's a fourth (or fifth) argument, use it to get the effect type. (args[4 - argsOffset])
 						// Otherwise, just apply it to every compatible list!
-						boolean addToAll;
-						if (args.length == (4 - argsOffset)) {
+						ArrayList<String> paths = new ArrayList<String> (3);
+						if (args.length >= (4 - argsOffset)) {
 							if (args[4 - argsOffset].equalsIgnoreCase("EFFECT")) {
-								configPath.concat(".deny-effects");
-								addToAll = false;
+								paths.add(configPath + ".deny-effects");
 							} else if (args[4 - argsOffset].equalsIgnoreCase("POTION")) {
-								configPath.concat(".deny-potions");
-								addToAll = false;
+								paths.add(configPath + ".deny-potions");
 							} else if (args[4 - argsOffset].equalsIgnoreCase("SPLASH")) {
-								configPath.concat(".deny-splashes");
-								addToAll = false;
+								paths.add(configPath + ".deny-splashes");
+							} else { // They gave us something like "derp" for a type!
+								sender.sendMessage(ChatColor.RED + "\"" + args[4 - argsOffset] + "\" isn't a recognizable effect type!");
+								return true;
 							}
 						} else {
-							addToAll = true; // Add it to every region.
+							paths.add(configPath + ".deny-effects");
+							paths.add(configPath + ".deny-potions");
+							paths.add(configPath + ".deny-splashes");
 						}
 						
-						// We should have everything we need at this point.
+						// We should have everything we need at this point, so let's start doing things!
 						loadRegionConfig();
 						
-						ArrayList<String> effectListFromConfig = AntiPotionField.regions.getRegionConfig().getConfig().get(configPath);
-						
-						
-						
+						for (String curPath : paths) {
+							ArrayList<String> regionEffectList = AntiPotionField.regions.getRegionConfig().getConfig().get(curPath);
+							
+							
+						}
 						
 						
 						
