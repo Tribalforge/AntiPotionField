@@ -52,8 +52,8 @@ public class CommandsExecWG implements CommandExecutor {
 			if (args.length == 0) { // No arguments provided!
 				sender.sendMessage(ChatColor.GREEN + "Usage: " + ChatColor.YELLOW + "/antipotionregion <region> <allow|deny>");	
 			
-			} else if (args.length == 1) { // They have written something like "/antipotionregion <region>".
-				
+			} else if (args.length == 1 || args.length == 2) { // They have written something like "/antipotionregion <region>" or "/antipotionregion <world> <region>".
+				int argsOffset;
 				try {
 					WorldGuardInterface wgi = new WorldGuardInterface();
 					List<World> worlds;
@@ -62,19 +62,32 @@ public class CommandsExecWG implements CommandExecutor {
 						World world = player.getWorld();
 						worlds = new ArrayList<World>();
 						worlds.add(world);
-					} else {
-						worlds = AntiPotionField.plugin.getServer().getWorlds();
+						argsOffset = 1;
+					} else { // This is the console!
+						if (args.length == 2) { // They provided a world - /antipotionregion <world> <region>
+							if (sender.getServer().getWorld(args[0]) != null) {
+								worlds.add(sender.getServer().getWorld(args[0]));
+							} else {
+								sender.sendMessage(ChatColor.RED + "\"" + args[0] + "\" isn't a world! Listing all matching regions from all worlds.");
+								worlds = AntiPotionField.plugin.getServer().getWorlds();
+							}
+							argsOffset = 0;
+						} else { // They only gave a region name - /antipotionregion <region> - like a player!
+							sender.sendMessage(ChatColor.YELLOW + "Listing all matching regions from all worlds.");
+							worlds = AntiPotionField.plugin.getServer().getWorlds();
+							argsOffset = 1;
+						}
 					}
 
 					for (World world : worlds) {
-						ProtectedRegion rg = wgi.GetRegion(world, args[0]);
+						ProtectedRegion rg = wgi.GetRegion(world, args[1 - argsOffset]);
 						if (rg != null) { // If the region exists...
-							if (AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[0])) {
+							if (AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset])) {
 								// If a section for this region exists in the configuration file...
 								
-								List<String> ls1 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-effects");
-								List<String> ls2 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-potions");
-								List<String> ls3 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[0] + ".deny-splashes");
+								List<String> ls1 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects");
+								List<String> ls2 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions");
+								List<String> ls3 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes");
 								boolean ex1, ex2, ex3;
 								String ef1 = ChatColor.GOLD + "Denied effects: " + ChatColor.YELLOW;
 								String ef2 = ChatColor.GOLD + "Denied potions: " + ChatColor.YELLOW;
