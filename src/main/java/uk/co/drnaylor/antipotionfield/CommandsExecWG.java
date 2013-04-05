@@ -214,7 +214,7 @@ public class CommandsExecWG implements CommandExecutor {
 						} else if (args[2 - argsOffset].equalsIgnoreCase("deny") || args[2 - argsOffset].equalsIgnoreCase("d")) {
 							denying = true;
 						} else { // Catch other letters
-                            sender.sendMessage(ChatColor.RED + "Incorrect parameter (expecting allow or deny)");
+                            sender.sendMessage(ChatColor.RED + "Incorrect parameter (expecting allow or deny)!");
                             return true;
                         }
                         
@@ -227,7 +227,7 @@ public class CommandsExecWG implements CommandExecutor {
 						for (int k = 0; k < pArgs.length; k++) {
 							List<String> newEff = Util.getFriendlyEffectNames(new String[] {pArgs[k]});
 							if (newEff.isEmpty()) {
-								sender.sendMessage(ChatColor.RED + "\"" + pArgs[k] + "\" isn't a potion effect!");
+								sender.sendMessage(ChatColor.RED + "\"" + pArgs[k] + "\" isn't a recognizable potion effect!");
 							} else {
 								for (String s : newEff) {
 									effects.add(s);
@@ -252,6 +252,7 @@ public class CommandsExecWG implements CommandExecutor {
 								paths.add(configPath + ".deny-splashes");
 							} else { // They gave us something like "derp" for a type!
 								sender.sendMessage(ChatColor.RED + "\"" + args[4 - argsOffset] + "\" isn't a recognizable effect type!");
+								sender.sendMessage(ChatColor.RED + "Acceptable types: \"effect\", \"potion\", \"splash\"");
 								return true;
 							}
 						} else {
@@ -262,8 +263,6 @@ public class CommandsExecWG implements CommandExecutor {
 						
 						// We should have everything we need at this point, so let's start doing things!
 						loadRegionConfig();
-						
-						// boolean denying, ArrayList effects
 						
 						for (String curPath : paths) {
 							List<String> regionEffectList = AntiPotionField.regions.getRegionConfig().getConfig().getStringList(curPath);
@@ -281,31 +280,37 @@ public class CommandsExecWG implements CommandExecutor {
 								for (String e : effects) {
 									if (!(regionEffectList.contains(e))) { // If the list doesn't already have this effect in it...
 										regionEffectList.add(e); // Add the new effect on to the end!
-										
 										sender.sendMessage(ChatColor.YELLOW + "Denied " + currentType.toLowerCase() + "  \"" + e + "\" in region \"" + args[1 - argsOffset] + "\".");
 									} else { // This effect is already denied.
 										sender.sendMessage(ChatColor.GRAY + currentType + " \"" + e + "\" is already denied in region \"" + args[1 - argsOffset] + "\".");
 									}
 								}
 								
-								AntiPotionField.regions.getRegionConfig().getConfig().set(curPath,regionEffectList); // Save the new list to the configuration file.
+								AntiPotionField.regions.getRegionConfig().getConfig().set(curPath, regionEffectList); // Set the new list to the configuration file.
 								
 							} else { // If we are removing from the list...
+								for (String e : effects) {
+									if (regionEffectList.contains(e)) { // If the list has this effect, we need to remove it now!
+										regionEffectList.remove(e); // Remove the effect.
+										sender.sendMessage(ChatColor.YELLOW + "Allowed " currentType.toLowerCase() + " \"" + e + "\" in region \"" + args[1 - argsOffset] + "\".");
+									} else { // This effect is already allowed - that is, it's not in the list.
+										sender.sendMessage(ChatColor.GRAY + currentType + " \"" + e + "\" is already allowed in region \"" + args[1 - argsOffset] + "\".");
+									}
+								}
 								
-								
-								
+								AntiPotionField.regions.getRegionConfig().getConfig().set(curPath, regionEffectList); // Set the new list to the configuration file.
 							}
 							
 						}
 						
-						
+						saveRegionConfig(); // Save the new configuration.
+						sender.sendMessage(ChatColor.GREEN + "All changes saved successfully.");
+						return true;
 						
 					} else {
 						sender.sendMessage(ChatColor.RED + "The region " + args[1 - argsOffset] + " does not exist!");
 						return true;
 					}
-					
-					
 					
 				} catch (WorldGuardAPIException error) {
 					sender.sendMessage(ChatColor.DARK_RED + "WorldGuard is not currently enabled!");
