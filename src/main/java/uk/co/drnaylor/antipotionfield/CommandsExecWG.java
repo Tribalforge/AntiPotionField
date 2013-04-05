@@ -56,7 +56,7 @@ public class CommandsExecWG implements CommandExecutor {
 				int argsOffset;
 				try {
 					WorldGuardInterface wgi = new WorldGuardInterface();
-					List<World> worlds;
+					List<World> worlds = new ArrayList<World>();
 					if (sender instanceof Player) {
 						if (args.length == 2) { // Too many arguments!
 							sender.sendMessage(ChatColor.RED + "Too many arguments!");
@@ -65,7 +65,6 @@ public class CommandsExecWG implements CommandExecutor {
 						// The args has to be 1 here for a player otherwise.
 						Player player = ((Player) sender).getPlayer();
 						World world = player.getWorld();
-						worlds = new ArrayList<World>();
 						worlds.add(world);
 						argsOffset = 1;
 					} else { // This is the console!
@@ -298,7 +297,7 @@ public class CommandsExecWG implements CommandExecutor {
 								for (String e : effects) {
 									if (regionEffectList.contains(e)) { // If the list has this effect, we need to remove it now!
 										regionEffectList.remove(e); // Remove the effect.
-										sender.sendMessage(ChatColor.YELLOW + "Allowed " currentType.toLowerCase() + " \"" + e + "\" in region \"" + args[1 - argsOffset] + "\".");
+										sender.sendMessage(ChatColor.YELLOW + "Allowed " + currentType.toLowerCase() + " \"" + e + "\" in region \"" + args[1 - argsOffset] + "\".");
 									} else { // This effect is already allowed - that is, it's not in the list.
 										sender.sendMessage(ChatColor.GRAY + currentType + " \"" + e + "\" is already allowed in region \"" + args[1 - argsOffset] + "\".");
 									}
