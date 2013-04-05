@@ -58,6 +58,11 @@ public class CommandsExecWG implements CommandExecutor {
 					WorldGuardInterface wgi = new WorldGuardInterface();
 					List<World> worlds;
 					if (sender instanceof Player) {
+						if (args.length == 2) { // Too many arguments!
+							sender.sendMessage(ChatColor.RED + "Too many arguments!");
+							return true;
+						}
+						// The args has to be 1 here for a player otherwise.
 						Player player = ((Player) sender).getPlayer();
 						World world = player.getWorld();
 						worlds = new ArrayList<World>();
@@ -148,18 +153,6 @@ public class CommandsExecWG implements CommandExecutor {
 					return true;
 				}
 			
-			} else if (args.length == 2) {
-				// /antipotionregion region allow? Not enough now!
-				// For a player, anyways. I'll add console compatibilities for region checking later.
-				
-				if (!(sender instanceof Player)) {
-					sender.sendMessage("Console usage isn't quite supported yet!");
-					return true;
-				} else {
-					sender.sendMessage(ChatColor.RED + "Too few arguments!");
-					sender.sendMessage(ChatColor.GREEN + "Usage: " + ChatColor.YELLOW + "/antipotionregion <region> <allow|deny> <potion|positive|negative|all> [type]");	
-					return true;
-				}
 			} else if (args.length >= 3) { // If they provide the region, allow|deny, an effect, and a possible type
 				
 				try {
