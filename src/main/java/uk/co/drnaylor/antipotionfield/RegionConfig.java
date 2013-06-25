@@ -12,7 +12,7 @@ public class RegionConfig {
      * @param filename Name of the file to interface with.
      */
     public RegionConfig(String filename) {
-        _regionConfig = new ConfigAccessor(AntiPotionField.plugin, filename);
+        _regionConfig = new ConfigAccessor(AntiPotionField.getPlugin(), filename);
     }
     
     /**
