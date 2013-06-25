@@ -10,7 +10,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
-import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException.WorldGuardExceptions;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
 /**
@@ -75,12 +74,12 @@ public class CommandsExecWG implements CommandExecutor {
                                     worlds.add(sender.getServer().getWorld(args[0]));
                                 } else {
                                     sender.sendMessage(ChatColor.RED + "\"" + args[0] + "\" isn't a world! Listing all matching regions from all worlds.");
-                                    worlds = AntiPotionField.plugin.getServer().getWorlds();
+                                    worlds = AntiPotionField.getPlugin().getServer().getWorlds();
                                 }
                                 argsOffset = 0;
                             } else { // They only gave a region name - /antipotionregion <region> - like a player!
                                 sender.sendMessage(ChatColor.YELLOW + "Listing all matching regions from all worlds.");
-                                worlds = AntiPotionField.plugin.getServer().getWorlds();
+                                worlds = AntiPotionField.getPlugin().getServer().getWorlds();
                                 argsOffset = 1;
                             }
                         }
@@ -88,12 +87,12 @@ public class CommandsExecWG implements CommandExecutor {
                         for (World world : worlds) {
                             ProtectedRegion rg = wgi.GetRegion(world, args[1 - argsOffset]);
                             if (rg != null) { // If the region exists...
-                                if (AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset])) {
+                                if (AntiPotionField.getRegionConfig().getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset])) {
                                     // If a section for this region exists in the configuration file...
 
-                                    List<String> ls1 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects");
-                                    List<String> ls2 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions");
-                                    List<String> ls3 = AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes");
+                                    List<String> ls1 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects");
+                                    List<String> ls2 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions");
+                                    List<String> ls3 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes");
                                     boolean ex1, ex2, ex3;
                                     String ef1 = ChatColor.GOLD + "Denied effects: " + ChatColor.YELLOW;
                                     String ef2 = ChatColor.GOLD + "Denied potions: " + ChatColor.YELLOW;
@@ -200,7 +199,7 @@ public class CommandsExecWG implements CommandExecutor {
                         if (rg != null) { // If the region exists...
 
                             String configPath = "no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset];
-                            if (!(AntiPotionField.regions.getRegionConfig().getConfig().isConfigurationSection(configPath))) {
+                            if (!(AntiPotionField.getRegionConfig().getRegionConfig().getConfig().isConfigurationSection(configPath))) {
 
                                 /*
                                  If this region has no configuration section in the config, set the following paths:
@@ -213,9 +212,9 @@ public class CommandsExecWG implements CommandExecutor {
                                  */
 
                                 loadRegionConfig();
-                                AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects", new ArrayList<String>());
-                                AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions", new ArrayList<String>());
-                                AntiPotionField.regions.getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes", new ArrayList<String>());
+                                AntiPotionField.getRegionConfig().getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects", new ArrayList<String>());
+                                AntiPotionField.getRegionConfig().getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions", new ArrayList<String>());
+                                AntiPotionField.getRegionConfig().getRegionConfig().getConfig().set("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes", new ArrayList<String>());
                                 saveRegionConfig();
                             }
 
@@ -277,7 +276,7 @@ public class CommandsExecWG implements CommandExecutor {
                             loadRegionConfig();
 
                             for (String curPath : paths) {
-                                List<String> regionEffectList = AntiPotionField.regions.getRegionConfig().getConfig().getStringList(curPath);
+                                List<String> regionEffectList = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList(curPath);
 
                                 String currentType = "";
                                 if (curPath.contains("deny-effects")) {
@@ -298,7 +297,7 @@ public class CommandsExecWG implements CommandExecutor {
                                         }
                                     }
 
-                                    AntiPotionField.regions.getRegionConfig().getConfig().set(curPath, regionEffectList); // Set the new list to the configuration file.
+                                    AntiPotionField.getRegionConfig().getRegionConfig().getConfig().set(curPath, regionEffectList); // Set the new list to the configuration file.
 
                                 } else { // If we are removing from the list...
                                     for (String e : effects) {
@@ -310,7 +309,7 @@ public class CommandsExecWG implements CommandExecutor {
                                         }
                                     }
 
-                                    AntiPotionField.regions.getRegionConfig().getConfig().set(curPath, regionEffectList); // Set the new list to the configuration file.
+                                    AntiPotionField.getRegionConfig().getRegionConfig().getConfig().set(curPath, regionEffectList); // Set the new list to the configuration file.
                                 }
 
                             }
@@ -337,10 +336,10 @@ public class CommandsExecWG implements CommandExecutor {
 
     public void saveRegionConfig() {
         //regions.getRegionConfig().getConfig().set("regions", regionList);
-        AntiPotionField.regions.getRegionConfig().saveConfig();
+        AntiPotionField.getRegionConfig().getRegionConfig().saveConfig();
     }
 
     public void loadRegionConfig() {
-        AntiPotionField.regions.getRegionConfig().reloadConfig();
+        AntiPotionField.getRegionConfig().getRegionConfig().reloadConfig();
     }
 }

@@ -201,7 +201,7 @@ public abstract class Util {
         for (String s : regionlist) {
             //For each region, get its denied effect StringList out of the configuration file
             //and add any new denied effects to the deniedEffects ArrayList.
-            for (String e : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-effects")) {
+            for (String e : AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-effects")) {
                 if (!deniedEffects.contains(PotionEffectType.getByName(e))) { //To prevent duplicate entries
                     deniedEffects.add(PotionEffectType.getByName(e));
                 }
@@ -229,7 +229,7 @@ public abstract class Util {
         ArrayList<PotionEffectType> deniedEffects = new ArrayList<PotionEffectType>();
 
         for (String s : regionlist) {
-            for (String e : AntiPotionField.regions.getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-" + apl.toString() + "s")) {
+            for (String e : AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-" + apl.toString() + "s")) {
                 if (!deniedEffects.contains(PotionEffectType.getByName(e))) { //To prevent duplicate entries
                     deniedEffects.add(PotionEffectType.getByName(e));
                 }
@@ -256,7 +256,7 @@ public abstract class Util {
             return true;
         } else if (player.hasPermission("antipotionfield.allowed-potions." + type.getName())) {
             return true;
-        } else if (AntiPotionField.regions.getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass, and it is not allowed in the region...
+        } else if (AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass, and it is not allowed in the region...
             return false;
         }
 

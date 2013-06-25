@@ -1,15 +1,12 @@
 package uk.co.drnaylor.antipotionfield;
 
-import java.util.Properties;
 import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInit;
 
 public class AntiPotionField extends JavaPlugin {
-    
-    Properties _props;
-    String _version;
-    public static AntiPotionField plugin;
-    public static RegionConfig regions;
+
+    private static AntiPotionField plugin;
+    private static RegionConfig regions;
     CommandsExecWG wgCE;
     PlayerEventRegionsHandler _WGeventHandler;
     
@@ -40,5 +37,23 @@ public class AntiPotionField extends JavaPlugin {
     public void onDisable() {
         regions.getRegionConfig().saveConfig();
         getLogger().info("AntiPotionField " + this.getDescription().getVersion() + " disabled.");
-    }    
+    }  
+    
+    /**
+     * Gets the base class of the plugin.
+     * @return The plugin.
+     */
+    public static AntiPotionField getPlugin()
+    {
+        return plugin;
+    }
+    
+    /**
+     * Gets the region configuration class
+     * @return 
+     */
+    public static RegionConfig getRegionConfig()
+    {
+        return regions;
+    }
 }
