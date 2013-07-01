@@ -259,25 +259,33 @@ public abstract class Util {
     		player.sendMessage(ChatColor.GREEN + "Checking your potion types...");
         //If you have the relavent bypass nodes, then you can still use your positive potions.
         if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
+        		player.sendMessage(ChatColor.GREEN + "You have region bypass permissions.");
             return true;
         } else if (player.hasPermission("antipotionfield.bypass")) {
+        		player.sendMessage(ChatColor.GREEN + "You have APR bypass permissions.");
             return true;
         } else if (player.isOp()) {
+        	player.sendMessage(ChatColor.GREEN + "You're an op! You can bypass.");
             return true;
         } else if (player.hasPermission("antipotionfield.allowed-potions." + type.getName())) {
+        	player.sendMessage(ChatColor.GREEN + "You're allowed to have that effect.");
             return true;
         } else if (AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("denypositiveregions." + player.getWorld().getName()).contains("__global__")) { //If we didn't bypass, and it is not allowed in the region...
+        	player.sendMessage(ChatColor.GREEN + "That last line is returning false.");
             return false;
         }
 
         ArrayList<PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player);
         if (deniedEffects == null || deniedEffects.isEmpty()) { // If there's a plugin error, no denied effects, or no denied regions...
+        	player.sendMessage(ChatColor.GREEN + "There's no denied effects at your location.");
             return true;         // Return true, as there's no reason for us to attempt to stop the event.
         } else if (deniedEffects.contains(type)) { // If the potion/effect they're trying to use is disallowed...
+        	player.sendMessage(ChatColor.RED + "That potion effect is disallowed!");
             return false;
         }
 
         //We can use the potion here.
+    	player.sendMessage(ChatColor.GREEN + "You can use that effect.");
         return true;
 
     }
