@@ -14,7 +14,7 @@ import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException.World
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
 /**
- * This class is currently being renovated to account for new changes.
+ * This class handles new syntax for adding denied potions to regions.
  */
 public class CommandsExecWG implements CommandExecutor {
 
