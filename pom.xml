@@ -54,7 +54,8 @@
   </dependencies>
   
     <build>
-      <finalName>AntiPotionField</finalName>   
+      <finalName>AntiPotionField</finalName>
+      <sourceDirectory>src/main/java</sourceDirectory>
       <plugins>
           <plugin>
               <groupId>com.google.code.maven-replacer-plugin</groupId>
