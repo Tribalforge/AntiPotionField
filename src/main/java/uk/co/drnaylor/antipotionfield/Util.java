@@ -189,9 +189,9 @@ public abstract class Util {
 
         String apls = apl.toString().toLowerCase();
         if (apls.equalsIgnoreCase("splash")) {
-            apls.concat("es");
+            apls = apls.concat("es");
         } else {
-            apls.concat("s");
+            apls = apls.concat("s");
         }
 
         for (String s : regionlist) {

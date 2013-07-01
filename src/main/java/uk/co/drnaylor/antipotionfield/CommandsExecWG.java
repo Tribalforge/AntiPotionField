@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * This class handles new syntax for adding denied potions to regions.
  */
+@SuppressWarnings("WeakerAccess")
 public class CommandsExecWG implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -25,11 +26,7 @@ public class CommandsExecWG implements CommandExecutor {
             boolean perm;
             if (sender instanceof Player) {
                 //Do we have config perms?
-                if (sender.hasPermission("antipotionfield.regions") || sender.isOp()) {
-                    perm = true;
-                } else {
-                    perm = false;
-                }
+                perm = sender.hasPermission("antipotionfield.regions") || sender.isOp();
             } else {
                 perm = true;
             } //console!
@@ -129,7 +126,7 @@ public class CommandsExecWG implements CommandExecutor {
                                         ex3 = false;
                                     }
 
-                                    if (ex1 == false && ex2 == false && ex3 == false) { // If all three lists are empty or don't exist...
+                                    if (!ex1 && !ex2 && !ex3) { // If all three lists are empty or don't exist...
                                         sender.sendMessage(ChatColor.YELLOW + "This region has no denied potions associated with it.");
                                         return true;
                                     } else { // There's something we can print out!
@@ -165,7 +162,6 @@ public class CommandsExecWG implements CommandExecutor {
                         WorldGuardInterface wgi = new WorldGuardInterface();
                         World world;
                         ProtectedRegion rg;
-                        argsOffset = 0;
 
                         if (!(sender instanceof Player)) {
                             // The console must supply a world, so they must have four arguments (optionally five).
@@ -236,10 +232,10 @@ public class CommandsExecWG implements CommandExecutor {
                             String[] pArgs = args[3 - argsOffset].split(",");
                             //List<String> effects = Util.getFriendlyEffectNames(pArgs);
                             List<String> effects = new ArrayList<String>();
-                            for (int k = 0; k < pArgs.length; k++) {
-                                List<String> newEff = Util.getFriendlyEffectNames(new String[]{pArgs[k]});
+                            for (String a : pArgs) {
+                                List<String> newEff = Util.getFriendlyEffectNames(new String[]{a});
                                 if (newEff.isEmpty()) {
-                                    sender.sendMessage(ChatColor.RED + "\"" + pArgs[k] + "\" isn't a recognizable potion effect!");
+                                    sender.sendMessage(ChatColor.RED + "\"" + a + "\" isn't a recognizable potion effect!");
                                 } else {
                                     for (String s : newEff) {
                                         effects.add(s);

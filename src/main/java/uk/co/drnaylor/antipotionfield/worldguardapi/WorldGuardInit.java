@@ -18,7 +18,7 @@ public abstract class WorldGuardInit {
      * This function checks to see if WorldGuard is enabled on the system without
      * going through the checks again.
      *
-     * @returns <b>true</b> if WorldGuard is available, <b>false</b> otherwise.
+     * @return <b>true</b> if WorldGuard is available, <b>false</b> otherwise.
      */
     public static boolean wgAvailable() {
         return _isAvailable;
@@ -28,9 +28,9 @@ public abstract class WorldGuardInit {
      * This is a getter method, so we don't override the variable. Just in case.
      * We can only modify this variable within the class (so, only if we are re-checking for WG)
      *
-     * @returns WorldGuardPlugin object containing the plugin, null otherwise
+     * @return WorldGuardPlugin object containing the plugin, null otherwise
      */
-    public static WorldGuardPlugin getWGPlugin() throws WorldGuardAPIException {
+    public static WorldGuardPlugin getWGPlugin() {
         return wgPlugin;
     }
 
@@ -40,7 +40,7 @@ public abstract class WorldGuardInit {
      * This method checks to see if WorldGuard is loaded.
      *
      * @param host Reference to the currently running plugin (the class that extends JavaPlugin)
-     * @returns <b>true</b> if Worldguard is available, <b>false</b> otherwise.
+     * @return <b>true</b> if Worldguard is available, <b>false</b> otherwise.
      */
     public static boolean checkWG(Plugin host) {
         //Is there a plugin with the name WorldGuard?

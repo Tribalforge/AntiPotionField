@@ -4,15 +4,14 @@ import uk.co.drnaylor.antipotionfield.configaccessor.ConfigAccessor;
 
 public class RegionConfig {
 
-    private ConfigAccessor _regionConfig;
+    private final ConfigAccessor _regionConfig;
 
     /**
      * Creates an object that interfaces with a config file.
      *
-     * @param filename Name of the file to interface with.
      */
-    public RegionConfig(String filename) {
-        _regionConfig = new ConfigAccessor(AntiPotionField.getPlugin(), filename);
+    public RegionConfig() {
+        _regionConfig = new ConfigAccessor(AntiPotionField.getPlugin(), "regions.yml");
     }
 
     /**
