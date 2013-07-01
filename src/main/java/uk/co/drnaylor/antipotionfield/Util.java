@@ -147,6 +147,7 @@ public abstract class Util {
      *
      * @param player The player whose location we want to check.
      * @return deniedEffects A StringList of denied effects at that location.
+     * @deprecated For some reason, there's two of these.
      */
     public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
         List<String> regionlist = getRegionsAtPlayerLoc(player);
@@ -233,7 +234,7 @@ public abstract class Util {
             return false;
         }
 
-        ArrayList<PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player);
+        ArrayList<PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player, EffectMeans.POTION);
         if (deniedEffects == null || deniedEffects.isEmpty()) { // If there's a plugin error, no denied effects, or no denied regions...
         	player.sendMessage(ChatColor.GREEN + "There's no denied effects at your location.");
             return true;         // Return true, as there's no reason for us to attempt to stop the event.
@@ -265,14 +266,23 @@ public abstract class Util {
         }
         //Get the denied effects of the regions and check to see if any of the player's current effects are disallowed in it.
         ArrayList<PotionEffect> curEffects = (ArrayList<PotionEffect>) player.getActivePotionEffects();
-        ArrayList<PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player);
+        
+        List<EffectMeans> typ = new ArrayList<EffectMeans> (3);
+        typ.add(EffectMeans.POTION);
+        typ.add(EffectMeans.SPLASH);
+        typ.add(EffectMeans.EFFECT);
+        
+        for (EffectMeans apl : typ) {
+        	ArrayList<PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player, apl);
 
-        for (PotionEffect ce : curEffects) {
-            if (denEff.contains(ce.getType())) {
-                player.sendMessage(ChatColor.RED + "You have a denied effect!");
-                return true; // The player has an effect that's denied at their current location.
+            for (PotionEffect ce : curEffects) {
+                if (denEff.contains(ce.getType())) {
+                    player.sendMessage(ChatColor.RED + "You have a denied effect!");
+                    return true; // The player has an effect that's denied at their current location.
+                }
             }
         }
+        
         // If we iterated through all of the player's effects, they must be legal.
         player.sendMessage(ChatColor.GREEN + "All of your effects are legal.");
         return false;
@@ -287,18 +297,30 @@ public abstract class Util {
     public static void removeDisallowedEffects(Player player) {
         if (!player.getActivePotionEffects().isEmpty()) {
             player.sendMessage(ChatColor.DARK_GREEN + "You have potion effects!");
-            ArrayList<PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player);
+            
+            List<EffectMeans> typ = new ArrayList<EffectMeans> (3);
+            typ.add(EffectMeans.POTION);
+            typ.add(EffectMeans.SPLASH);
+            typ.add(EffectMeans.EFFECT);
+
             boolean notify = false;
-            for (PotionEffect ce : player.getActivePotionEffects()) {
-                if (denEff.contains(ce.getType())) {
-                    if (!player.hasPermission("worldguard.region.bypass." + player.getWorld().getName()) || !player.hasPermission("antipotionfield.bypass") || !player.isOp() || player.hasPermission("antipotionfield.allowed-potions." + ce.getType().getName())) {
-                        continue; //Don't remove the effect if they're allowed to have it!
+            
+            for (EffectMeans apl : typ) {
+            	
+            	ArrayList<PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player, apl);
+                for (PotionEffect ce : player.getActivePotionEffects()) {
+                    if (denEff.contains(ce.getType())) {
+                        if (!player.hasPermission("worldguard.region.bypass." + player.getWorld().getName()) || !player.hasPermission("antipotionfield.bypass") || !player.isOp() || player.hasPermission("antipotionfield.allowed-potions." + ce.getType().getName())) {
+                            continue; //Don't remove the effect if they're allowed to have it!
+                        }
+                        notify = true;
+                        player.sendMessage(ChatColor.RED + "Your effect " + ce.getType().getName() + " is disallowed in this area.");
+                        player.removePotionEffect(ce.getType());
                     }
-                    notify = true;
-                    player.sendMessage(ChatColor.RED + "Your effect " + ce.getType().getName() + " is disallowed in this area.");
-                    player.removePotionEffect(ce.getType());
                 }
+                
             }
+            
             if (notify) { // Keep this out of the loop!
                 player.sendMessage(ChatColor.RED + "Your disallowed potion effects have been removed.");
             }
