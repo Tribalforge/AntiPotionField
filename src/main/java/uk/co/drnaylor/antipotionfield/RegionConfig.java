@@ -8,16 +8,16 @@ public class RegionConfig {
 
     /**
      * Creates an object that interfaces with a config file.
-     * 
+     *
      * @param filename Name of the file to interface with.
      */
     public RegionConfig(String filename) {
         _regionConfig = new ConfigAccessor(AntiPotionField.getPlugin(), filename);
     }
-    
+
     /**
      * Get the configuration object represented by this object.
-     * 
+     *
      * @return ConfigAccessor object containing the object.
      */
     public ConfigAccessor getRegionConfig() {

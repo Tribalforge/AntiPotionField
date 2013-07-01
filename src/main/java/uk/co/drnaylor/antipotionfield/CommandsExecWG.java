@@ -1,8 +1,6 @@
 package uk.co.drnaylor.antipotionfield;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -11,6 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class handles new syntax for adding denied potions to regions.
@@ -46,7 +47,7 @@ public class CommandsExecWG implements CommandExecutor {
              * <potion> is the effect type (or predefined list of types); [type] is optional and defines whether the potion is splash, drink, or effect.
              * If [type] isn't provided, the plugin will assume that it must be allowed or denied for all types.
              */
-            
+
             int argsOffset;
             switch (args.length) {
                 case 0:
