@@ -220,27 +220,29 @@ public abstract class Util {
      * that location.
      */
     public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player, EffectMeans apl) {
-
+    		player.sendMessage(ChatColor.GREEN + "Getting denied effects at your location");
         List<String> regionlist = getRegionsAtPlayerLoc(player);
         if (regionlist == null || regionlist.isEmpty()) {
             return null; //If there's no regions, then there's no effects!
         }
 
         ArrayList<PotionEffectType> deniedEffects = new ArrayList<PotionEffectType>();
-
+        
+        String apls = apl.toString().toLowerCase();
+        if (apls.equalsIgnoreCase("splash")) {
+        	apls.concat("es");
+        } else {
+        	apls.concat("s");
+        }
+        
         for (String s : regionlist) {
-            for (String e : AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-" + apl.toString() + "s")) {
+            for (String e : AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + s + ".deny-" + apls)) {
                 if (!deniedEffects.contains(PotionEffectType.getByName(e))) { //To prevent duplicate entries
                     deniedEffects.add(PotionEffectType.getByName(e));
+                    	player.sendMessage(ChatColor.GREEN + "Effect " + e + " is denied");
                 }
             }
         }
-        	// ********* DEBUG
-        	player.sendMessage(ChatColor.GREEN + "Denied effects:");
-        	for (PotionEffectType type : deniedEffects) {
-        		player.sendMessage(ChatColor.GREEN + type.getName());
-        	}
-        	// ********* DEBUG
         
         return deniedEffects;
     }
@@ -254,6 +256,7 @@ public abstract class Util {
      * false.
      */
     public static boolean canUsePotion(Player player, PotionEffectType type) {
+    		player.sendMessage(ChatColor.GREEN + "Checking your potion types...");
         //If you have the relavent bypass nodes, then you can still use your positive potions.
         if (player.hasPermission("worldguard.region.bypass." + player.getWorld().getName())) {
             return true;
@@ -291,6 +294,7 @@ public abstract class Util {
             return false; // The calling method should check for this on their own!
         }
         if (player.getActivePotionEffects().isEmpty()) {
+        		player.sendMessage(ChatColor.GREEN + "You have no denied effects.");
             return false; // They have no effects to iterate through in the first place!
         }
         //Get the denied effects of the regions and check to see if any of the player's current effects are disallowed in it.
@@ -299,10 +303,12 @@ public abstract class Util {
 
         for (PotionEffect ce : curEffects) {
             if (denEff.contains(ce.getType())) {
+            		player.sendMessage(ChatColor.RED + "You have a denied effect!");
                 return true; // The player has an effect that's denied at their current location.
             }
         }
         // If we iterated through all of the player's effects, they must be legal.
+        	player.sendMessage(ChatColor.GREEN + "All of your effects are legal.");
         return false;
     }
 
