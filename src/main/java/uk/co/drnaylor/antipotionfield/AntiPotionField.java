@@ -3,12 +3,13 @@ package uk.co.drnaylor.antipotionfield;
 import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInit;
 
+@SuppressWarnings("WeakerAccess")
 public class AntiPotionField extends JavaPlugin {
 
     private static AntiPotionField plugin;
     private static RegionConfig regions;
-    CommandsExecWG wgCE;
-    PlayerEventRegionsHandler _WGeventHandler;
+    private CommandsExecWG wgCE;
+    private PlayerEventRegionsHandler _WGeventHandler;
 
 
     @Override
@@ -23,7 +24,7 @@ public class AntiPotionField extends JavaPlugin {
 
         Util.InitArrays();
 
-        regions = new RegionConfig("regions.yml");
+        regions = new RegionConfig();
         wgCE = new CommandsExecWG();
         getCommand("antipotionregion").setExecutor(wgCE);
 
@@ -51,7 +52,7 @@ public class AntiPotionField extends JavaPlugin {
     /**
      * Gets the region configuration class
      *
-     * @return
+     * @return The region configuration class.
      */
     public static RegionConfig getRegionConfig() {
         return regions;

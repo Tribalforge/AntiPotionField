@@ -8,15 +8,7 @@ public class WorldGuardAPIException extends Exception {
 
     public WorldGuardExceptions except;
 
-    /**
-     * @param exception Exception to throw
-     */
-    public WorldGuardAPIException(WorldGuardExceptions exception) {
-        except = exception;
-    }
-
     public WorldGuardAPIException() {
-
+        except = WorldGuardExceptions.NotEnabled;
     }
-
 }
