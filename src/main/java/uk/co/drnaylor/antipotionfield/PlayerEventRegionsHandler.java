@@ -28,6 +28,7 @@ public class PlayerEventRegionsHandler implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        	player.sendMessage(ChatColor.DARK_GREEN + "Move event called");
         //See the Util class
         Util.removeDisallowedEffects(player);
     }
@@ -40,7 +41,9 @@ public class PlayerEventRegionsHandler implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerConsume(PlayerItemConsumeEvent event) {
+    		event.getPlayer().sendMessage(ChatColor.DARK_GREEN + "PlayerItemConsume event called");
         if (event.getItem().getType() != Material.POTION) {
+        		event.getPlayer().sendMessage(ChatColor.DARK_GREEN + "You didn't drink a potion.");
             return;
         }
         // Check the type of potion in the player's hand
@@ -48,7 +51,9 @@ public class PlayerEventRegionsHandler implements Listener {
         Collection<PotionEffect> effects = potion.getEffects();
 
         for (PotionEffect e : effects) {
+        		event.getPlayer().sendMessage(ChatColor.GREEN + "Your potion has effect \"" + e.getType().getName() + "\".");
             if (!(Util.canUsePotion(event.getPlayer(), e.getType()))) {
+            		event.getPlayer().sendMessage(ChatColor.GREEN + "It's denied!");
                 // If we get here, we cancel this event and all is done.
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(ChatColor.RED + "You cannot use that potion here!");
@@ -68,20 +73,26 @@ public class PlayerEventRegionsHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPotionSplash(PotionSplashEvent event) {
         if (event.getPotion().getShooter() instanceof Player) { // If a player threw the potion...
+        		Player sh = (Player) event.getPotion().getShooter();
+        		sh.sendMessage(ChatColor.GREEN + "Potion splash event called");
             List<PotionEffectType> deniedEffects = Util.getDeniedEffectsAtPlayerLoc((Player) event.getPotion().getShooter());
             Collection<PotionEffect> potionEffects = event.getPotion().getEffects();
             if (deniedEffects == null || potionEffects == null || deniedEffects.isEmpty() || potionEffects.isEmpty()) {
-                return;
+            		sh.sendMessage(ChatColor.GREEN + "No denied effects");
+            	return;
             }
 
             for (PotionEffect pe : potionEffects) {
                 if (deniedEffects.contains(pe.getType())) {
                     event.setCancelled(true); // We can try more complex checks later.
+                    	sh.sendMessage(ChatColor.DARK_GREEN + "Event cancelled");
                     Util.removeDisallowedEffects((Player) event.getPotion().getShooter());
+                    	sh.sendMessage(ChatColor.GREEN + "Removing effects on shooter");
                     Collection<LivingEntity> affected = event.getAffectedEntities();
                     if (affected != null && !affected.isEmpty()) { // If there is an affected entity
                         for (LivingEntity p : affected) {
                             if (p instanceof Player) {
+                            		sh.sendMessage(ChatColor.GREEN + "Removing effects on " + p.toString());
                                 Util.removeDisallowedEffects((Player) p);
                             }
                         }

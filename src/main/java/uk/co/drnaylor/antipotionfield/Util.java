@@ -235,6 +235,13 @@ public abstract class Util {
                 }
             }
         }
+        	// ********* DEBUG
+        	player.sendMessage(ChatColor.GREEN + "Denied effects:");
+        	for (PotionEffectType type : deniedEffects) {
+        		player.sendMessage(ChatColor.GREEN + type.getName());
+        	}
+        	// ********* DEBUG
+        
         return deniedEffects;
     }
 
@@ -307,6 +314,7 @@ public abstract class Util {
      */
     public static void removeDisallowedEffects(Player player) {
         if (!player.getActivePotionEffects().isEmpty()) {
+        		player.sendMessage(ChatColor.DARK_GREEN + "You have potion effects!");
             ArrayList<PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player);
             boolean notify = false;
             for (PotionEffect ce : player.getActivePotionEffects()) {
