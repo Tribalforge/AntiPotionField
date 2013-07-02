@@ -8,10 +8,7 @@ import uk.co.drnaylor.antipotionfield.enums.EffectMeans;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Util {
 
@@ -61,7 +58,7 @@ public abstract class Util {
      * @param args The passed String array to translate into friendly effect names.
      * @return A StringList with the requested names. The List will be empty if there were no matches.
      */
-    public static List<String> getFriendlyEffectNames(String[] args) {
+    public static Collection<String> getFriendlyEffectNames(String[] args) {
         Set<String> effects = new HashSet<String>();
         for (String arg : args) {
             if (arg.equalsIgnoreCase("blindness") || arg.equalsIgnoreCase("blind")) {
@@ -119,8 +116,7 @@ public abstract class Util {
             }
         }
 
-        // Convert the Set into a List and return it.
-        return new ArrayList<String>(effects);
+        return effects;
     }
 
     /**
@@ -149,13 +145,13 @@ public abstract class Util {
      * @return deniedEffects A StringList of denied effects at that location.
      * @deprecated For some reason, there's two of these.
      */
-    public static ArrayList<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
+    public static List<PotionEffectType> getDeniedEffectsAtPlayerLoc(Player player) {
         List<String> regionlist = getRegionsAtPlayerLoc(player);
         if (regionlist == null || regionlist.isEmpty()) {
             return null; //If there's no regions, then there's no effects!
         }
 
-        ArrayList<PotionEffectType> deniedEffects = new ArrayList<PotionEffectType>();
+        List<PotionEffectType> deniedEffects = new ArrayList<PotionEffectType>();
 
         for (String s : regionlist) {
             //For each region, get its denied effect StringList out of the configuration file
@@ -234,7 +230,7 @@ public abstract class Util {
             return false;
         }
 
-        ArrayList<PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player, EffectMeans.POTION);
+        List<PotionEffectType> deniedEffects = getDeniedEffectsAtPlayerLoc(player);
         if (deniedEffects == null || deniedEffects.isEmpty()) { // If there's a plugin error, no denied effects, or no denied regions...
         	player.sendMessage(ChatColor.GREEN + "There's no denied effects at your location.");
             return true;         // Return true, as there's no reason for us to attempt to stop the event.
@@ -265,7 +261,7 @@ public abstract class Util {
             return false; // They have no effects to iterate through in the first place!
         }
         //Get the denied effects of the regions and check to see if any of the player's current effects are disallowed in it.
-        ArrayList<PotionEffect> curEffects = (ArrayList<PotionEffect>) player.getActivePotionEffects();
+        Collection<PotionEffect> curEffects = player.getActivePotionEffects();
         
         List<EffectMeans> typ = new ArrayList<EffectMeans> (3);
         typ.add(EffectMeans.POTION);
@@ -273,8 +269,8 @@ public abstract class Util {
         typ.add(EffectMeans.EFFECT);
         
         for (EffectMeans apl : typ) {
-        	ArrayList<PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player, apl);
-
+        	List<PotionEffectType> denEff = getDeniedEffectsAtPlayerLoc(player, apl);
+        
             for (PotionEffect ce : curEffects) {
                 if (denEff.contains(ce.getType())) {
                     player.sendMessage(ChatColor.RED + "You have a denied effect!");
@@ -282,7 +278,6 @@ public abstract class Util {
                 }
             }
         }
-        
         // If we iterated through all of the player's effects, they must be legal.
         player.sendMessage(ChatColor.GREEN + "All of your effects are legal.");
         return false;
@@ -318,9 +313,7 @@ public abstract class Util {
                         player.removePotionEffect(ce.getType());
                     }
                 }
-                
             }
-            
             if (notify) { // Keep this out of the loop!
                 player.sendMessage(ChatColor.RED + "Your disallowed potion effects have been removed.");
             }

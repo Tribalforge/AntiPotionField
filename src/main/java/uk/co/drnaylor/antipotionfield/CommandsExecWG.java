@@ -11,6 +11,7 @@ import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardAPIException;
 import uk.co.drnaylor.antipotionfield.worldguardapi.WorldGuardInterface;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class CommandsExecWG implements CommandExecutor {
 
             /*
              * New command syntax:
-             * /antipotionregion <region> <allow|deny> <potion|positive|negative|all> [type]
+             * /antipotionregion [world] <region> <allow|deny> <potion|positive|negative|all> [type]
              * 
              * <region> is the region name; <allow|deny> specifies whether to allow or deny the potion;
              * <potion> is the effect type (or predefined list of types); [type] is optional and defines whether the potion is splash, drink, or effect.
@@ -52,109 +53,38 @@ public class CommandsExecWG implements CommandExecutor {
                     return true;
                 case 1:
                 case 2:
-
-                    try {
-                        WorldGuardInterface wgi = new WorldGuardInterface();
-                        List<World> worlds = new ArrayList<World>();
-                        if (sender instanceof Player) {
-                            if (args.length == 2) { // Too many arguments!
-                                sender.sendMessage(ChatColor.RED + "Too many arguments!");
-                                return true;
-                            }
-                            // The args has to be 1 here for a player otherwise.
-                            Player player = ((Player) sender).getPlayer();
-                            World world = player.getWorld();
-                            worlds.add(world);
-                            argsOffset = 1;
-                        } else { // This is the console!
-                            if (args.length == 2) { // They provided a world - /antipotionregion <world> <region>
-                                if (sender.getServer().getWorld(args[0]) != null) {
-                                    worlds.add(sender.getServer().getWorld(args[0]));
-                                } else {
-                                    sender.sendMessage(ChatColor.RED + "\"" + args[0] + "\" isn't a world! Listing all matching regions from all worlds.");
-                                    worlds = AntiPotionField.getPlugin().getServer().getWorlds();
-                                }
-                                argsOffset = 0;
-                            } else { // They only gave a region name - /antipotionregion <region> - like a player!
-                                sender.sendMessage(ChatColor.YELLOW + "Listing all matching regions from all worlds.");
+                    List<World> worlds = new ArrayList<World>();
+                    if (sender instanceof Player) {
+                        if (args.length == 2) { // Too many arguments!
+                            sender.sendMessage(ChatColor.RED + "Too many arguments!");
+                            return true;
+                        }
+                        // The args has to be 1 here for a player otherwise.
+                        Player player = ((Player) sender).getPlayer();
+                        worlds.add(player.getWorld());
+                        argsOffset = 1;
+                    } else { // This is the console!
+                        if (args.length == 2) { // They provided a world - /antipotionregion <world> <region>
+                            if (sender.getServer().getWorld(args[0]) != null) {
+                                worlds.add(sender.getServer().getWorld(args[0]));
+                            } else {
+                                sender.sendMessage(ChatColor.RED + "\"" + args[0] + "\" isn't a world! Listing all matching regions from all worlds.");
                                 worlds = AntiPotionField.getPlugin().getServer().getWorlds();
-                                argsOffset = 1;
                             }
+                            argsOffset = 0;
+                        } else { // They only gave a region name - /antipotionregion <region> - like a player!
+                            sender.sendMessage(ChatColor.YELLOW + "Listing all matching regions from all worlds.");
+                            worlds = AntiPotionField.getPlugin().getServer().getWorlds();
+                            argsOffset = 1;
                         }
-
+                    }
+                    try {
                         for (World world : worlds) {
-                            ProtectedRegion rg = wgi.GetRegion(world, args[1 - argsOffset]);
-                            if (rg != null) { // If the region exists...
-                                if (AntiPotionField.getRegionConfig().getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset])) {
-                                    // If a section for this region exists in the configuration file...
-
-                                    List<String> ls1 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-effects");
-                                    List<String> ls2 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-potions");
-                                    List<String> ls3 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + args[1 - argsOffset] + ".deny-splashes");
-                                    boolean ex1, ex2, ex3;
-                                    String ef1 = ChatColor.GOLD + "Denied effects: " + ChatColor.YELLOW;
-                                    String ef2 = ChatColor.GOLD + "Denied potions: " + ChatColor.YELLOW;
-                                    String ef3 = ChatColor.GOLD + "Denied splashes: " + ChatColor.YELLOW;
-
-                                    if (ls1 != null && !(ls1.isEmpty())) {
-                                        ex1 = true; // The first list exists
-                                        for (String s1 : ls1) {
-                                            ef1.concat(s1 + ", ");
-                                        }
-                                        ef1 = ef1.substring(0, ef1.lastIndexOf(",") - 1); // Thanks, dualspiral!
-                                    } else {
-                                        ex1 = false; // The first list doesn't exist, or is empty.
-                                    }
-
-                                    if (ls2 != null && !(ls2.isEmpty())) {
-                                        ex2 = true;
-                                        for (String s2 : ls2) {
-                                            ef2.concat(s2 + ", ");
-                                        }
-                                        ef2 = ef2.substring(0, ef2.lastIndexOf(",") - 1);
-                                    } else {
-                                        ex2 = false;
-                                    }
-
-                                    if (ls3 != null && !(ls3.isEmpty())) {
-                                        ex3 = true;
-                                        for (String s3 : ls3) {
-                                            ef3.concat(s3 + ", ");
-                                        }
-                                        ef3 = ef3.substring(0, ef3.lastIndexOf(",") - 1);
-                                    } else {
-                                        ex3 = false;
-                                    }
-
-                                    if (!ex1 && !ex2 && !ex3) { // If all three lists are empty or don't exist...
-                                        sender.sendMessage(ChatColor.YELLOW + "This region has no denied potions associated with it.");
-                                        return true;
-                                    } else { // There's something we can print out!
-                                        sender.sendMessage(ChatColor.YELLOW + "This region denies the following effects and types:");
-                                        if (ex1) {
-                                            sender.sendMessage(ef1);
-                                        }
-                                        if (ex2) {
-                                            sender.sendMessage(ef2);
-                                        }
-                                        if (ex3) {
-                                            sender.sendMessage(ef3);
-                                        }
-                                    }
-                                } else {
-                                    sender.sendMessage(ChatColor.YELLOW + "This region has no denied potions associated with it.");
-                                    return true;
-                                }
-                            } else { // The region doesn't exist!
-                                sender.sendMessage(ChatColor.YELLOW + "The region " + args[0] + " cannot be found.");
-                                return true;
-                            }
+                           // Spun out into it's own method for readability.
+                           listRegionRestrictions(sender, world, args[1 - argsOffset]);
                         }
-
-
                     } catch (WorldGuardAPIException e) {
                         sender.sendMessage(ChatColor.DARK_RED + "WorldGuard is not currently enabled!");
-                        return true;
                     }
                     return true;
                 default:
@@ -233,7 +163,7 @@ public class CommandsExecWG implements CommandExecutor {
                             //List<String> effects = Util.getFriendlyEffectNames(pArgs);
                             List<String> effects = new ArrayList<String>();
                             for (String a : pArgs) {
-                                List<String> newEff = Util.getFriendlyEffectNames(new String[]{a});
+                                Collection<String> newEff = Util.getFriendlyEffectNames(new String[]{a});
                                 if (newEff.isEmpty()) {
                                     sender.sendMessage(ChatColor.RED + "\"" + a + "\" isn't a recognizable potion effect!");
                                 } else {
@@ -338,5 +268,78 @@ public class CommandsExecWG implements CommandExecutor {
 
     public void loadRegionConfig() {
         AntiPotionField.getRegionConfig().getRegionConfig().reloadConfig();
+    }
+
+    /**
+     * Lists the region restrictions to the current CommandSender
+     * @param world World to check restrictions for
+     * @param region Region name to check
+     */
+    private void listRegionRestrictions(CommandSender sender, World world, String region) throws WorldGuardAPIException {
+        WorldGuardInterface wgi = new WorldGuardInterface();
+        ProtectedRegion rg = wgi.GetRegion(world, region);
+        if (rg != null) { // If the region exists...
+            if (AntiPotionField.getRegionConfig().getRegionConfig().getConfig().isConfigurationSection("no-potion-effect-regions." + world.getName() + "." + region)) {
+                // If a section for this region exists in the configuration file...
+
+                List<String> ls1 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + region + ".deny-effects");
+                List<String> ls2 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + region + ".deny-potions");
+                List<String> ls3 = AntiPotionField.getRegionConfig().getRegionConfig().getConfig().getStringList("no-potion-effect-regions." + world.getName() + "." + region + ".deny-splashes");
+                boolean ex1, ex2, ex3;
+                String ef1 = ChatColor.GOLD + "Denied effects: " + ChatColor.YELLOW;
+                String ef2 = ChatColor.GOLD + "Denied potions: " + ChatColor.YELLOW;
+                String ef3 = ChatColor.GOLD + "Denied splashes: " + ChatColor.YELLOW;
+
+                if (ls1 != null && !(ls1.isEmpty())) {
+                    ex1 = true; // The first list exists
+                    for (String s1 : ls1) {
+                        ef1.concat(s1 + ", ");
+                    }
+                    ef1 = ef1.substring(0, ef1.lastIndexOf(",") - 1); // Thanks, dualspiral!
+                } else {
+                    ex1 = false; // The first list doesn't exist, or is empty.
+                }
+
+                if (ls2 != null && !(ls2.isEmpty())) {
+                    ex2 = true;
+                    for (String s2 : ls2) {
+                        ef2.concat(s2 + ", ");
+                    }
+                    ef2 = ef2.substring(0, ef2.lastIndexOf(",") - 1);
+                } else {
+                    ex2 = false;
+                }
+
+                if (ls3 != null && !(ls3.isEmpty())) {
+                    ex3 = true;
+                    for (String s3 : ls3) {
+                        ef3.concat(s3 + ", ");
+                    }
+                    ef3 = ef3.substring(0, ef3.lastIndexOf(",") - 1);
+                } else {
+                    ex3 = false;
+                }
+
+                if (!ex1 && !ex2 && !ex3) { // If all three lists are empty or don't exist...
+                    sender.sendMessage(ChatColor.YELLOW + "This region has no denied potions associated with it.");
+                    return;
+                } else { // There's something we can print out!
+                    sender.sendMessage(ChatColor.YELLOW + "This region denies the following effects and types:");
+                    if (ex1) {
+                        sender.sendMessage(ef1);
+                    }
+                    if (ex2) {
+                        sender.sendMessage(ef2);
+                    }
+                    if (ex3) {
+                        sender.sendMessage(ef3);
+                    }
+                }
+            } else {
+                sender.sendMessage(ChatColor.YELLOW + "This region has no denied potions associated with it.");
+            }
+        } else { // The region doesn't exist!
+            sender.sendMessage(ChatColor.YELLOW + "The region " + region + " cannot be found.");
+        }
     }
 }
